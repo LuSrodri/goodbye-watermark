@@ -4,8 +4,7 @@ import './globals.css'
 
 const inter = Inter({
   subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-inter'
+  display: 'swap'
 })
 
 export const viewport: Viewport = {
@@ -34,13 +33,13 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en">
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/goodbyewatermark.com-logo-favicon.png" type="image/png" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       </head>
-      <body className="font-sans antialiased bg-white text-gray-900">
+      <body className={`${inter.className} antialiased`}>
         {children}
       </body>
     </html>
