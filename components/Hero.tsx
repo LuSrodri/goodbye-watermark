@@ -13,10 +13,10 @@ export default function Hero({ sloganData }: Props) {
       <Image
         src="/goodbyewatermark.com-logo-hero.png"
         alt="Goodbye Watermark"
-        width={280}
+        width={560}
         height={280}
         priority
-        className="mb-6 sm:mb-8 w-40 h-40 sm:w-56 sm:h-56 lg:w-[280px] lg:h-[280px]"
+        className="mb-6 sm:mb-8 w-[100%] h-auto self-center"
       />
       <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 tracking-tight text-center lg:text-left">
         {sloganData.slogan}
