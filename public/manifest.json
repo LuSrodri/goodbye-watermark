@@ -1,0 +1,21 @@
+{
+  "name": "Goodbye Watermark",
+  "short_name": "GBW",
+  "description": "Remove watermarks from images instantly with AI",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/goodbyewatermark.com-logo-favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/goodbyewatermark.com-logo-hero.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
