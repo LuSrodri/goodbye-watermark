@@ -130,6 +130,7 @@ export default function ExampleImages() {
       {showModal && processedImage && (
         <ProcessedImageModal
           image={processedImage}
+          sessionId={sessionId}
           onClose={() => {
             setShowModal(false)
             setProcessedImage(null)
