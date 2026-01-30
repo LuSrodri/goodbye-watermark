@@ -2,75 +2,50 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase'
 import { ApiResponse, ProcessImageResponse } from '@/lib/types'
 import { v4 as uuidv4 } from 'uuid'
+import Replicate from 'replicate'
 
 const DAILY_LIMIT = 5
-const DASHSCOPE_API_URL = 'https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation'
+const replicate = new Replicate()
 
 function getTodayDate(): string {
   return new Date().toISOString().split('T')[0]
 }
 
-async function processWithQwen(imageBase64: string): Promise<string> {
-  const response = await fetch(DASHSCOPE_API_URL, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${process.env.DASHSCOPE_API_KEY}`,
-      'Content-Type': 'application/json',
-      'X-DashScope-Async': 'disable'
-    },
-    body: JSON.stringify({
-      model: 'qwen-image-edit-max',
-      input: {
-        messages: [
-          {
-            role: 'user',
-            content: [
-              { image: imageBase64 },
-              { text: 'No watermark' }
-            ]
-          }
-        ]
-      },
-      parameters: {
-        n: 1,
-        watermark: false,
-        prompt_extend: false
-      }
-    })
-  })
-
-  if (!response.ok) {
-    const errorText = await response.text()
-    console.error('Qwen API error:', errorText)
-    throw new Error('Failed to process image with AI')
+async function processWithReplicate(imageBase64: string): Promise<ArrayBuffer> {
+  const input = {
+    image: [imageBase64],
+    prompt: "Remove the watermark from this image"
   }
 
-  const result = await response.json()
+  const output = await replicate.run("qwen/qwen-image-edit-plus", { input })
 
-  if (result.output?.choices?.[0]?.message?.content?.[0]?.image) {
-    return result.output.choices[0].message.content[0].image
+  if (output && Array.isArray(output) && output.length > 0) {
+    // output[0] is a FileOutput object, we need to get its content
+    const fileOutput = output[0] as { url: () => string }
+    const imageUrl = fileOutput.url()
+
+    // Fetch the image content from the URL
+    const response = await fetch(imageUrl)
+    if (!response.ok) {
+      throw new Error('Failed to fetch processed image from Replicate')
+    }
+
+    return response.arrayBuffer()
   }
 
   throw new Error('No processed image in response')
 }
 
-async function uploadToSupabase(imageUrl: string, sessionId: string): Promise<string> {
+async function uploadToSupabase(imageBuffer: ArrayBuffer, sessionId: string): Promise<string> {
   const supabaseAdmin = getSupabaseAdmin()
 
-  // Fetch the processed image from Qwen's temporary URL
-  const imageResponse = await fetch(imageUrl)
-  if (!imageResponse.ok) {
-    throw new Error('Failed to fetch processed image')
-  }
-
-  const imageBuffer = await imageResponse.arrayBuffer()
-  const fileName = `${sessionId}/${uuidv4()}.png`
+  const fileName = `${sessionId}/${uuidv4()}.webp`
 
   const { data, error } = await supabaseAdmin
     .storage
     .from('processed-images')
     .upload(fileName, imageBuffer, {
-      contentType: 'image/png',
+      contentType: 'image/webp',
       cacheControl: '31536000'
     })
 
@@ -133,11 +108,11 @@ export async function POST(request: NextRequest): Promise<NextResponse<ApiRespon
       )
     }
 
-    // Process image with Qwen API
-    const processedImageUrl = await processWithQwen(imageBase64)
+    // Process image with Replicate API
+    const processedImageBuffer = await processWithReplicate(imageBase64)
 
-    // Upload to Supabase Storage (Qwen URLs expire after 24h)
-    const permanentUrl = await uploadToSupabase(processedImageUrl, sessionId)
+    // Upload to Supabase Storage
+    const permanentUrl = await uploadToSupabase(processedImageBuffer, sessionId)
 
     // Create image record
     const imageId = uuidv4()
