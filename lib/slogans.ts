@@ -96,6 +96,22 @@ export const slogans: Record<string, SloganData> = {
     subslogan: 'Remove watermarks for a polished Instagram feed.',
     metaTitle: 'Remove Watermarks for Instagram - Goodbye Watermark',
     metaDescription: 'Clean up images for Instagram by removing watermarks. Free AI tool for content creators.'
+  },
+  'sports-photos': {
+    slug: 'sports-photos',
+    title: 'Goodbye Watermark',
+    slogan: 'Your best moments, without watermarks',
+    subslogan: 'Remove watermarks from your sports and race photos.',
+    metaTitle: 'Remove Watermarks from Sports Photos - Goodbye Watermark',
+    metaDescription: 'Remove watermarks from sports photos, marathon pictures, and race images. Free AI-powered tool for athletes.'
+  },
+  'nano-banana': {
+    slug: 'nano-banana',
+    title: 'Goodbye Watermark',
+    slogan: 'Your race photos, watermark-free',
+    subslogan: 'Remove Nano Banana watermarks from your race photos instantly.',
+    metaTitle: 'Remove Nano Banana Watermark - Goodbye Watermark',
+    metaDescription: 'Remove Nano Banana watermarks from your marathon and race photos. Free AI-powered watermark removal tool.'
   }
 }
 
