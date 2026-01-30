@@ -14,7 +14,9 @@ function getTodayDate(): string {
 async function processWithReplicate(imageBase64: string): Promise<ArrayBuffer> {
   const input = {
     image: [imageBase64],
-    prompt: "Remove the watermark from this image"
+    prompt: "Remove the watermark from this image",
+    disable_safety_checker: true,
+    output_quality: 100
   }
 
   const output = await replicate.run("qwen/qwen-image-edit-plus", { input })

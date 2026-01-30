@@ -5,23 +5,28 @@ import Link from 'next/link'
 import { ArrowLeft, Download, Share2, Check, Loader2, ImageIcon } from 'lucide-react'
 import { getSessionId, formatDate } from '@/lib/utils'
 import { ProcessedImage } from '@/lib/types'
+import ProcessedImageModal from '@/components/ProcessedImageModal'
 
 export default function HistoryClient() {
   const [history, setHistory] = useState<ProcessedImage[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [sharingId, setSharingId] = useState<string | null>(null)
   const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [selectedImage, setSelectedImage] = useState<ProcessedImage | null>(null)
+  const [sessionId, setSessionId] = useState<string>('')
 
   useEffect(() => {
     const fetchHistory = async () => {
-      const sessionId = getSessionId()
-      if (!sessionId) {
+      const sid = getSessionId()
+      if (!sid) {
         setIsLoading(false)
         return
       }
 
+      setSessionId(sid)
+
       try {
-        const response = await fetch(`/api/history?sessionId=${sessionId}&limit=100`)
+        const response = await fetch(`/api/history?sessionId=${sid}&limit=100`)
         const result = await response.json()
         if (result.success && result.data) {
           setHistory(result.data)
@@ -112,7 +117,8 @@ export default function HistoryClient() {
             {history.map((image) => (
               <div
                 key={image.id}
-                className="group relative bg-gray-100 rounded-xl overflow-hidden aspect-square"
+                className="group relative bg-gray-100 rounded-xl overflow-hidden aspect-square cursor-pointer"
+                onClick={() => setSelectedImage(image)}
               >
                 <img
                   src={image.processed_url}
@@ -126,14 +132,14 @@ export default function HistoryClient() {
                     </p>
                     <div className="flex gap-2">
                       <button
-                        onClick={() => handleDownload(image)}
+                        onClick={(e) => { e.stopPropagation(); handleDownload(image) }}
                         className="flex-1 flex items-center justify-center gap-1 sm:gap-1.5 py-1.5 sm:py-2 bg-white text-gray-900 rounded-lg text-xs sm:text-sm font-medium hover:bg-gray-100 transition-colors"
                       >
                         <Download className="w-3 h-3 sm:w-4 sm:h-4" />
                         <span className="hidden sm:inline">Download</span>
                       </button>
                       <button
-                        onClick={() => handleShare(image)}
+                        onClick={(e) => { e.stopPropagation(); handleShare(image) }}
                         disabled={sharingId === image.id}
                         className="p-1.5 sm:p-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition-colors disabled:opacity-50"
                       >
@@ -153,6 +159,15 @@ export default function HistoryClient() {
           </div>
         )}
       </div>
+
+      {selectedImage && sessionId && (
+        <ProcessedImageModal
+          image={selectedImage}
+          sessionId={sessionId}
+          title="Image Preview"
+          onClose={() => setSelectedImage(null)}
+        />
+      )}
     </div>
   )
 }

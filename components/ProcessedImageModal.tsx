@@ -3,15 +3,15 @@
 import { useState } from 'react'
 import { X, Download, Share2, Check, Copy, Loader2 } from 'lucide-react'
 import { ProcessedImage } from '@/lib/types'
-import { useSession } from './SessionProvider'
 
 interface Props {
   image: ProcessedImage
+  sessionId: string
   onClose: () => void
+  title?: string
 }
 
-export default function ProcessedImageModal({ image, onClose }: Props) {
-  const { sessionId } = useSession()
+export default function ProcessedImageModal({ image, sessionId, onClose, title = "Watermark Removed!" }: Props) {
   const [isSharing, setIsSharing] = useState(false)
   const [shareUrl, setShareUrl] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
@@ -79,7 +79,7 @@ export default function ProcessedImageModal({ image, onClose }: Props) {
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between p-3 sm:p-4 border-b border-gray-100">
-          <h3 className="text-base sm:text-lg font-semibold text-gray-900">Watermark Removed!</h3>
+          <h3 className="text-base sm:text-lg font-semibold text-gray-900">{title}</h3>
           <button
             onClick={onClose}
             className="p-1.5 sm:p-2 rounded-full hover:bg-gray-100 transition-colors"

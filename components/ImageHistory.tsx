@@ -2,10 +2,11 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Clock, ChevronRight, Download, Share2, Check, Loader2 } from 'lucide-react'
+import { Clock, ChevronRight, Loader2 } from 'lucide-react'
 import { useSession } from './SessionProvider'
 import { ProcessedImage } from '@/lib/types'
 import { formatDate } from '@/lib/utils'
+import ProcessedImageModal from './ProcessedImageModal'
 
 function FooterCredit() {
   return (
@@ -25,8 +26,7 @@ function FooterCredit() {
 
 export default function ImageHistory() {
   const { history, sessionId, isLoading } = useSession()
-  const [sharingId, setSharingId] = useState<string | null>(null)
-  const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [selectedImage, setSelectedImage] = useState<ProcessedImage | null>(null)
 
   if (isLoading) {
     return (
@@ -54,46 +54,16 @@ export default function ImageHistory() {
 
   const recentImages = history.slice(0, 5)
 
-  const handleDownload = async (image: ProcessedImage) => {
-    try {
-      const response = await fetch(image.processed_url)
-      const blob = await response.blob()
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `watermark-removed-${image.id.slice(0, 8)}.png`
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(url)
-    } catch (error) {
-      console.error('Download failed:', error)
-    }
-  }
-
-  const handleShare = async (image: ProcessedImage) => {
-    setSharingId(image.id)
-    try {
-      const response = await fetch('/api/share', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ imageId: image.id, sessionId })
-      })
-
-      const result = await response.json()
-      if (result.success && result.data) {
-        await navigator.clipboard.writeText(result.data.shareUrl)
-        setCopiedId(image.id)
-        setTimeout(() => setCopiedId(null), 2000)
-      }
-    } catch (error) {
-      console.error('Share failed:', error)
-    } finally {
-      setSharingId(null)
-    }
-  }
-
   return (
+    <>
+    {selectedImage && (
+      <ProcessedImageModal
+        image={selectedImage}
+        sessionId={sessionId}
+        title="Image Preview"
+        onClose={() => setSelectedImage(null)}
+      />
+    )}
     <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
         <div className="flex items-center justify-between mb-2 sm:mb-3">
@@ -115,46 +85,24 @@ export default function ImageHistory() {
         </div>
 
         <div className="flex items-end justify-between gap-3 sm:gap-4">
-          <div className="flex gap-2 sm:gap-4 overflow-x-auto pb-1 sm:pb-2 flex-1 scrollbar-hide">
+          <div className="flex gap-2 sm:gap-3 overflow-x-auto pb-1 sm:pb-2 flex-1 scrollbar-hide">
             {recentImages.map((image) => (
-              <div
+              <button
                 key={image.id}
-                className="flex-shrink-0 group relative"
+                onClick={() => setSelectedImage(image)}
+                className="flex-shrink-0 group"
               >
-                <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-lg overflow-hidden bg-gray-100">
+                <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-lg overflow-hidden bg-gray-100 ring-2 ring-transparent group-hover:ring-gray-300 transition-all">
                   <img
                     src={image.processed_url}
                     alt="Processed image"
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <div className="absolute inset-0 flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 rounded-lg">
-                  <button
-                    onClick={() => handleDownload(image)}
-                    className="p-1 sm:p-1.5 bg-white rounded-full hover:bg-gray-100 transition-colors"
-                    title="Download"
-                  >
-                    <Download className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-gray-700" />
-                  </button>
-                  <button
-                    onClick={() => handleShare(image)}
-                    disabled={sharingId === image.id}
-                    className="p-1 sm:p-1.5 bg-white rounded-full hover:bg-gray-100 transition-colors disabled:opacity-50"
-                    title="Share"
-                  >
-                    {sharingId === image.id ? (
-                      <Loader2 className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-gray-700 animate-spin" />
-                    ) : copiedId === image.id ? (
-                      <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-green-600" />
-                    ) : (
-                      <Share2 className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-gray-700" />
-                    )}
-                  </button>
-                </div>
                 <p className="hidden sm:block text-xs text-gray-400 mt-1 text-center truncate w-20">
                   {formatDate(image.created_at)}
                 </p>
-              </div>
+              </button>
             ))}
           </div>
           <div className="flex-shrink-0 pb-1 sm:pb-2 hidden sm:block">
@@ -168,5 +116,6 @@ export default function ImageHistory() {
         </div>
       </div>
     </div>
+    </>
   )
 }

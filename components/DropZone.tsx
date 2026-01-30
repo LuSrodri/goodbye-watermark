@@ -222,6 +222,7 @@ export default function DropZone() {
       {showModal && processedImage && (
         <ProcessedImageModal
           image={processedImage}
+          sessionId={sessionId}
           onClose={() => {
             setShowModal(false)
             setProcessedImage(null)
