@@ -77,8 +77,9 @@ export default function ProcessedImageModal({ image, sessionId, onClose, title =
       const blob = await response.blob()
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
+      const fileType = blob.type.split('/')[1]
       a.href = url
-      a.download = `watermark-removed-${image.id.slice(0, 8)}.png`
+      a.download = `watermark-removed-${image.id.slice(0, 8)}.${fileType}`
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
