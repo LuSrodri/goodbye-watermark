@@ -14,12 +14,13 @@ function getTodayDate(): string {
 async function processWithReplicate(imageBase64: string): Promise<ArrayBuffer> {
   const input = {
     image: [imageBase64],
-    prompt: "Remove the watermark from this image",
+    prompt: "No one watermarks. Clean, high quality image.",
     disable_safety_checker: true,
-    output_quality: 100
+    output_quality: 100,
+    output_format: "webp"
   }
 
-  const output = await replicate.run("qwen/qwen-image-edit-plus", { input })
+  const output = await replicate.run("qwen/qwen-image-edit-2511", { input })
 
   if (output && Array.isArray(output) && output.length > 0) {
     // output[0] is a FileOutput object, we need to get its content
