@@ -1,16 +1,18 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react'
-import { ProcessedImage, SessionInfo } from '@/lib/types'
-import { getSessionId } from '@/lib/utils'
+import { createContext, useContext, useEffect, useState, ReactNode, useCallback, useRef } from 'react'
+import { ProcessedImage } from '@/lib/types'
+import { getAllImages, resetDailyCountIfNewDay, saveImage, incrementDailyCount, StoredImage } from '@/lib/db'
+import { v4 as uuidv4 } from 'uuid'
+
+const DAILY_LIMIT = 5
 
 interface SessionContextType {
-  sessionId: string
   remainingToday: number
   history: ProcessedImage[]
   isLoading: boolean
   refreshSession: () => Promise<void>
-  addToHistory: (image: ProcessedImage) => void
+  addToHistory: (blob: Blob, originalName: string) => Promise<ProcessedImage>
   updateRemaining: (count: number) => void
 }
 
@@ -24,61 +26,86 @@ export function useSession() {
   return context
 }
 
+function storedToProcessed(stored: StoredImage): ProcessedImage {
+  return {
+    id: stored.id,
+    processed_url: URL.createObjectURL(stored.blob),
+    original_url: stored.originalName,
+    created_at: stored.createdAt,
+  }
+}
+
 export function SessionProvider({ children }: { children: ReactNode }) {
-  const [sessionId, setSessionId] = useState('')
-  const [remainingToday, setRemainingToday] = useState(5)
+  const [remainingToday, setRemainingToday] = useState(DAILY_LIMIT)
   const [history, setHistory] = useState<ProcessedImage[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const objectUrlsRef = useRef<string[]>([])
+
+  const revokeUrls = useCallback(() => {
+    objectUrlsRef.current.forEach(url => URL.revokeObjectURL(url))
+    objectUrlsRef.current = []
+  }, [])
 
   const refreshSession = useCallback(async () => {
-    const id = getSessionId()
-    if (!id) return
-
-    setSessionId(id)
-
     try {
-      const response = await fetch('/api/session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sessionId: id })
-      })
+      revokeUrls()
 
-      const result = await response.json()
+      const [images, session] = await Promise.all([
+        getAllImages(),
+        resetDailyCountIfNewDay(),
+      ])
 
-      if (result.success && result.data) {
-        const data = result.data as SessionInfo
-        setRemainingToday(data.remainingToday)
-        setHistory(data.history)
-      }
+      const processed = images.map(storedToProcessed)
+      objectUrlsRef.current = processed.map(p => p.processed_url)
+
+      setHistory(processed)
+      setRemainingToday(DAILY_LIMIT - session.dailyCount)
     } catch (error) {
-      console.error('Failed to initialize session:', error)
+      console.error('Failed to load session from IndexedDB:', error)
     } finally {
       setIsLoading(false)
     }
-  }, [])
+  }, [revokeUrls])
 
   useEffect(() => {
     refreshSession()
-  }, [refreshSession])
+    return revokeUrls
+  }, [refreshSession, revokeUrls])
 
-  const addToHistory = (image: ProcessedImage) => {
+  const addToHistory = useCallback(async (blob: Blob, originalName: string): Promise<ProcessedImage> => {
+    const id = uuidv4()
+    await saveImage(id, blob, originalName)
+    const session = await incrementDailyCount()
+
+    const objectUrl = URL.createObjectURL(blob)
+    objectUrlsRef.current.push(objectUrl)
+
+    const image: ProcessedImage = {
+      id,
+      processed_url: objectUrl,
+      original_url: originalName,
+      created_at: new Date().toISOString(),
+    }
+
     setHistory(prev => [image, ...prev])
-  }
+    setRemainingToday(DAILY_LIMIT - session.dailyCount)
 
-  const updateRemaining = (count: number) => {
+    return image
+  }, [])
+
+  const updateRemaining = useCallback((count: number) => {
     setRemainingToday(count)
-  }
+  }, [])
 
   return (
     <SessionContext.Provider
       value={{
-        sessionId,
         remainingToday,
         history,
         isLoading,
         refreshSession,
         addToHistory,
-        updateRemaining
+        updateRemaining,
       }}
     >
       {children}

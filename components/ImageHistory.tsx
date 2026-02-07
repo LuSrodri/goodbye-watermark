@@ -25,7 +25,7 @@ function FooterCredit() {
 }
 
 export default function ImageHistory() {
-  const { history, sessionId, isLoading } = useSession()
+  const { history, isLoading } = useSession()
   const [selectedImage, setSelectedImage] = useState<ProcessedImage | null>(null)
 
   if (isLoading) {
@@ -59,7 +59,6 @@ export default function ImageHistory() {
     {selectedImage && (
       <ProcessedImageModal
         image={selectedImage}
-        sessionId={sessionId}
         title="Image Preview"
         onClose={() => setSelectedImage(null)}
       />

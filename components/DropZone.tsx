@@ -7,8 +7,19 @@ import { fileToBase64, isValidImageType, MAX_FILE_SIZE } from '@/lib/utils'
 import { ProcessedImage, ProcessImageResponse } from '@/lib/types'
 import ProcessedImageModal from './ProcessedImageModal'
 
+function base64ToBlob(base64: string): Blob {
+  const [header, data] = base64.split(',')
+  const mime = header.match(/:(.*?);/)?.[1] || 'image/webp'
+  const bytes = atob(data)
+  const buffer = new Uint8Array(bytes.length)
+  for (let i = 0; i < bytes.length; i++) {
+    buffer[i] = bytes.charCodeAt(i)
+  }
+  return new Blob([buffer], { type: mime })
+}
+
 export default function DropZone() {
-  const { sessionId, remainingToday, updateRemaining, addToHistory } = useSession()
+  const { remainingToday, addToHistory } = useSession()
   const [isDragging, setIsDragging] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -41,11 +52,7 @@ export default function DropZone() {
       const response = await fetch('/api/process', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          sessionId,
-          imageBase64: base64,
-          originalUrl: file.name
-        })
+        body: JSON.stringify({ imageBase64: base64 })
       })
 
       const result = await response.json()
@@ -55,19 +62,9 @@ export default function DropZone() {
       }
 
       const data = result.data as ProcessImageResponse
-      updateRemaining(data.remainingToday)
+      const blob = base64ToBlob(data.processedBase64)
+      const newImage = await addToHistory(blob, file.name)
 
-      const newImage: ProcessedImage = {
-        id: data.imageId,
-        session_id: sessionId,
-        original_url: file.name,
-        processed_url: data.processedUrl,
-        is_public: false,
-        share_slug: null,
-        created_at: new Date().toISOString()
-      }
-
-      addToHistory(newImage)
       setProcessedImage(newImage)
       setShowModal(true)
     } catch (err) {
@@ -75,7 +72,7 @@ export default function DropZone() {
     } finally {
       setIsProcessing(false)
     }
-  }, [sessionId, remainingToday, updateRemaining, addToHistory])
+  }, [remainingToday, addToHistory])
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault()
@@ -222,7 +219,6 @@ export default function DropZone() {
       {showModal && processedImage && (
         <ProcessedImageModal
           image={processedImage}
-          sessionId={sessionId}
           onClose={() => {
             setShowModal(false)
             setProcessedImage(null)

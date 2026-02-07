@@ -6,6 +6,17 @@ import { useSession } from './SessionProvider'
 import { ProcessedImage, ProcessImageResponse } from '@/lib/types'
 import ProcessedImageModal from './ProcessedImageModal'
 
+function base64ToBlob(base64: string): Blob {
+  const [header, data] = base64.split(',')
+  const mime = header.match(/:(.*?);/)?.[1] || 'image/webp'
+  const bytes = atob(data)
+  const buffer = new Uint8Array(bytes.length)
+  for (let i = 0; i < bytes.length; i++) {
+    buffer[i] = bytes.charCodeAt(i)
+  }
+  return new Blob([buffer], { type: mime })
+}
+
 const examples = [
   { id: 1, src: '/examples/hug-couple-beach.jpg', alt: 'Couple hugging on beach' },
   { id: 2, src: '/examples/bottomless-girl.jpg', alt: 'Girl portrait' },
@@ -14,7 +25,7 @@ const examples = [
 ]
 
 export default function ExampleImages() {
-  const { sessionId, remainingToday, updateRemaining, addToHistory } = useSession()
+  const { remainingToday, addToHistory } = useSession()
   const [processingId, setProcessingId] = useState<number | null>(null)
   const [processedImage, setProcessedImage] = useState<ProcessedImage | null>(null)
   const [showModal, setShowModal] = useState(false)
@@ -55,11 +66,7 @@ export default function ExampleImages() {
       const processResponse = await fetch('/api/process', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          sessionId,
-          imageBase64: base64,
-          originalUrl: example.src
-        })
+        body: JSON.stringify({ imageBase64: base64 })
       })
 
       const result = await processResponse.json()
@@ -69,19 +76,9 @@ export default function ExampleImages() {
       }
 
       const data = result.data as ProcessImageResponse
-      updateRemaining(data.remainingToday)
+      const processedBlob = base64ToBlob(data.processedBase64)
+      const newImage = await addToHistory(processedBlob, example.src.split('/').pop() || 'example.jpg')
 
-      const newImage: ProcessedImage = {
-        id: data.imageId,
-        session_id: sessionId,
-        original_url: example.src,
-        processed_url: data.processedUrl,
-        is_public: false,
-        share_slug: null,
-        created_at: new Date().toISOString()
-      }
-
-      addToHistory(newImage)
       setProcessedImage(newImage)
       setShowModal(true)
     } catch (error) {
@@ -89,7 +86,7 @@ export default function ExampleImages() {
     } finally {
       setProcessingId(null)
     }
-  }, [sessionId, remainingToday, updateRemaining, addToHistory, processingId])
+  }, [remainingToday, addToHistory, processingId])
 
   if (validExamples.length === 0) {
     return null
@@ -130,7 +127,6 @@ export default function ExampleImages() {
       {showModal && processedImage && (
         <ProcessedImageModal
           image={processedImage}
-          sessionId={sessionId}
           onClose={() => {
             setShowModal(false)
             setProcessedImage(null)

@@ -1,5 +1,4 @@
 import { MetadataRoute } from 'next'
-import { supabaseAdmin } from '@/lib/supabase'
 import { getAllSlugs } from '@/lib/slogans'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -23,30 +22,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8
   }))
 
-  // Public shared images
-  let sharedImagePages: MetadataRoute.Sitemap = []
-
-  if (supabaseAdmin) {
-    try {
-      const { data: publicImages } = await supabaseAdmin
-        .from('processed_images')
-        .select('share_slug, created_at')
-        .eq('is_public', true)
-        .order('created_at', { ascending: false })
-        .limit(1000)
-
-      if (publicImages) {
-        sharedImagePages = publicImages.map((image) => ({
-          url: `${siteUrl}/s/${image.share_slug}`,
-          lastModified: new Date(image.created_at),
-          changeFrequency: 'yearly' as const,
-          priority: 0.5
-        }))
-      }
-    } catch (error) {
-      console.error('Failed to fetch public images for sitemap:', error)
-    }
-  }
-
-  return [...staticPages, ...seoPages, ...sharedImagePages]
+  return [...staticPages, ...seoPages]
 }

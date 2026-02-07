@@ -1,54 +1,59 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Download, Share2, Check, Loader2, ImageIcon } from 'lucide-react'
-import { getSessionId, formatDate } from '@/lib/utils'
+import { ArrowLeft, Download, Share2, Loader2, ImageIcon } from 'lucide-react'
+import { formatDate } from '@/lib/utils'
 import { ProcessedImage } from '@/lib/types'
+import { getAllImages, getImageBlob, StoredImage } from '@/lib/db'
 import ProcessedImageModal from '@/components/ProcessedImageModal'
+
+function storedToProcessed(stored: StoredImage): ProcessedImage {
+  return {
+    id: stored.id,
+    processed_url: URL.createObjectURL(stored.blob),
+    original_url: stored.originalName,
+    created_at: stored.createdAt,
+  }
+}
 
 export default function HistoryClient() {
   const [history, setHistory] = useState<ProcessedImage[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [sharingId, setSharingId] = useState<string | null>(null)
-  const [copiedId, setCopiedId] = useState<string | null>(null)
   const [selectedImage, setSelectedImage] = useState<ProcessedImage | null>(null)
-  const [sessionId, setSessionId] = useState<string>('')
+  const objectUrlsRef = useRef<string[]>([])
 
   useEffect(() => {
-    const fetchHistory = async () => {
-      const sid = getSessionId()
-      if (!sid) {
-        setIsLoading(false)
-        return
-      }
-
-      setSessionId(sid)
-
+    const loadHistory = async () => {
       try {
-        const response = await fetch(`/api/history?sessionId=${sid}&limit=100`)
-        const result = await response.json()
-        if (result.success && result.data) {
-          setHistory(result.data)
-        }
+        const images = await getAllImages()
+        const processed = images.map(storedToProcessed)
+        objectUrlsRef.current = processed.map(p => p.processed_url)
+        setHistory(processed)
       } catch (error) {
-        console.error('Failed to fetch history:', error)
+        console.error('Failed to load history:', error)
       } finally {
         setIsLoading(false)
       }
     }
 
-    fetchHistory()
+    loadHistory()
+
+    return () => {
+      objectUrlsRef.current.forEach(url => URL.revokeObjectURL(url))
+    }
   }, [])
 
   const handleDownload = async (image: ProcessedImage) => {
     try {
-      const response = await fetch(image.processed_url)
-      const blob = await response.blob()
+      const blob = await getImageBlob(image.id)
+      if (!blob) return
+
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
+      const fileType = blob.type.split('/')[1] || 'webp'
       a.href = url
-      a.download = `watermark-removed-${image.id.slice(0, 8)}.png`
+      a.download = `watermark-removed-${image.id.slice(0, 8)}.${fileType}`
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
@@ -59,25 +64,27 @@ export default function HistoryClient() {
   }
 
   const handleShare = async (image: ProcessedImage) => {
-    const sessionId = getSessionId()
-    setSharingId(image.id)
     try {
-      const response = await fetch('/api/share', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ imageId: image.id, sessionId })
+      const blob = await getImageBlob(image.id)
+      if (!blob) return
+
+      const file = new File([blob], `watermark-removed-${image.id.slice(0, 8)}.webp`, {
+        type: blob.type || 'image/webp',
       })
 
-      const result = await response.json()
-      if (result.success && result.data) {
-        await navigator.clipboard.writeText(result.data.shareUrl)
-        setCopiedId(image.id)
-        setTimeout(() => setCopiedId(null), 2000)
+      if (navigator.canShare?.({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: 'Goodbye Watermark',
+          text: 'Check out this watermark-free image!',
+        })
+      } else {
+        handleDownload(image)
       }
     } catch (error) {
-      console.error('Share failed:', error)
-    } finally {
-      setSharingId(null)
+      if (error instanceof Error && error.name !== 'AbortError') {
+        console.error('Share failed:', error)
+      }
     }
   }
 
@@ -140,16 +147,9 @@ export default function HistoryClient() {
                       </button>
                       <button
                         onClick={(e) => { e.stopPropagation(); handleShare(image) }}
-                        disabled={sharingId === image.id}
-                        className="p-1.5 sm:p-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition-colors disabled:opacity-50"
+                        className="p-1.5 sm:p-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition-colors"
                       >
-                        {sharingId === image.id ? (
-                          <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />
-                        ) : copiedId === image.id ? (
-                          <Check className="w-3 h-3 sm:w-4 sm:h-4 text-green-400" />
-                        ) : (
-                          <Share2 className="w-3 h-3 sm:w-4 sm:h-4" />
-                        )}
+                        <Share2 className="w-3 h-3 sm:w-4 sm:h-4" />
                       </button>
                     </div>
                   </div>
@@ -160,10 +160,9 @@ export default function HistoryClient() {
         )}
       </div>
 
-      {selectedImage && sessionId && (
+      {selectedImage && (
         <ProcessedImageModal
           image={selectedImage}
-          sessionId={sessionId}
           title="Image Preview"
           onClose={() => setSelectedImage(null)}
         />

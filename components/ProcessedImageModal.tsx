@@ -1,20 +1,18 @@
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { X, Download, Share2, Check, Copy, Loader2, Sparkles } from 'lucide-react'
+import { X, Download, Share2, Loader2, Sparkles } from 'lucide-react'
 import { ProcessedImage } from '@/lib/types'
+import { getImageBlob } from '@/lib/db'
 
 interface Props {
   image: ProcessedImage
-  sessionId: string
   onClose: () => void
   title?: string
 }
 
-export default function ProcessedImageModal({ image, sessionId, onClose, title = "Watermark Removed!" }: Props) {
+export default function ProcessedImageModal({ image, onClose, title = "Watermark Removed!" }: Props) {
   const [isSharing, setIsSharing] = useState(false)
-  const [shareUrl, setShareUrl] = useState<string | null>(null)
-  const [copied, setCopied] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
@@ -73,11 +71,12 @@ export default function ProcessedImageModal({ image, sessionId, onClose, title =
 
   const handleDownload = async () => {
     try {
-      const response = await fetch(image.processed_url)
-      const blob = await response.blob()
+      const blob = await getImageBlob(image.id)
+      if (!blob) return
+
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
-      const fileType = blob.type.split('/')[1]
+      const fileType = blob.type.split('/')[1] || 'webp'
       a.href = url
       a.download = `watermark-removed-${image.id.slice(0, 8)}.${fileType}`
       document.body.appendChild(a)
@@ -90,38 +89,32 @@ export default function ProcessedImageModal({ image, sessionId, onClose, title =
   }
 
   const handleShare = async () => {
-    if (shareUrl) {
-      await copyToClipboard(shareUrl)
-      return
-    }
-
     setIsSharing(true)
     try {
-      const response = await fetch('/api/share', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ imageId: image.id, sessionId })
+      const blob = await getImageBlob(image.id)
+      if (!blob) return
+
+      const file = new File([blob], `watermark-removed-${image.id.slice(0, 8)}.webp`, {
+        type: blob.type || 'image/webp',
       })
 
-      const result = await response.json()
-      if (result.success && result.data) {
-        setShareUrl(result.data.shareUrl)
-        await copyToClipboard(result.data.shareUrl)
+      if (navigator.canShare?.({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: 'Goodbye Watermark',
+          text: 'Check out this watermark-free image!',
+        })
+      } else {
+        // Fallback: download the image
+        handleDownload()
       }
     } catch (error) {
-      console.error('Share failed:', error)
+      // User cancelled share is not an error
+      if (error instanceof Error && error.name !== 'AbortError') {
+        console.error('Share failed:', error)
+      }
     } finally {
       setIsSharing(false)
-    }
-  }
-
-  const copyToClipboard = async (text: string) => {
-    try {
-      await navigator.clipboard.writeText(text)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    } catch (error) {
-      console.error('Copy failed:', error)
     }
   }
 
@@ -238,45 +231,21 @@ export default function ProcessedImageModal({ image, sessionId, onClose, title =
           <button
             onClick={handleShare}
             disabled={isSharing}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 md:py-3.5 px-4 md:px-6 rounded-xl md:rounded-2xl text-sm md:text-base font-semibold transition-all active:scale-[0.98] touch-manipulation ${
-              copied
-                ? 'bg-emerald-50 text-emerald-600 border-2 border-emerald-200'
-                : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50'
-            } disabled:opacity-50 disabled:cursor-not-allowed`}
+            className="flex-1 flex items-center justify-center gap-2 py-3 md:py-3.5 px-4 md:px-6 rounded-xl md:rounded-2xl text-sm md:text-base font-semibold transition-all active:scale-[0.98] touch-manipulation bg-white text-gray-700 border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSharing ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" />
                 <span className="hidden sm:inline">Sharing...</span>
               </>
-            ) : copied ? (
-              <>
-                <Check className="w-5 h-5" />
-                <span>Copied!</span>
-              </>
             ) : (
               <>
-                {shareUrl ? <Copy className="w-5 h-5" /> : <Share2 className="w-5 h-5" />}
-                <span>{shareUrl ? 'Copy Link' : 'Share'}</span>
+                <Share2 className="w-5 h-5" />
+                <span>Share</span>
               </>
             )}
           </button>
         </div>
-
-        {/* Share URL Display */}
-        {shareUrl && (
-          <div className="px-4 pb-4 md:px-5 md:pb-5 -mt-2">
-            <div
-              className="flex items-center gap-2 p-3 bg-gray-50 rounded-xl border border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors"
-              onClick={() => copyToClipboard(shareUrl)}
-            >
-              <div className="flex-1 truncate text-sm text-gray-600 font-mono">
-                {shareUrl}
-              </div>
-              <Copy className="w-4 h-4 text-gray-400 flex-shrink-0" />
-            </div>
-          </div>
-        )}
       </div>
     </div>
   )
