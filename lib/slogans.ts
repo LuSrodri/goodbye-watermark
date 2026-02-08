@@ -105,13 +105,21 @@ export const slogans: Record<string, SloganData> = {
     metaTitle: 'Remove Watermarks from Sports Photos - Goodbye Watermark',
     metaDescription: 'Remove watermarks from sports photos, marathon pictures, and race images. Free AI-powered tool for athletes.'
   },
+  'race': {
+    slug: 'race',
+    title: 'Goodbye Watermark',
+    slogan: 'Your race photos, watermark-free',
+    subslogan: 'Remove race watermarks from your race photos instantly.',
+    metaTitle: 'Remove Race Watermark - Goodbye Watermark',
+    metaDescription: 'Remove race watermarks from your marathon and race photos. Free AI-powered watermark removal tool.'
+  },
   'nano-banana': {
     slug: 'nano-banana',
     title: 'Goodbye Watermark',
-    slogan: 'Your race photos, watermark-free',
-    subslogan: 'Remove Nano Banana watermarks from your race photos instantly.',
+    slogan: 'Your Nano Banana generated photos, watermark-free',
+    subslogan: 'Remove Nano Banana watermarks from your generated photos instantly.',
     metaTitle: 'Remove Nano Banana Watermark - Goodbye Watermark',
-    metaDescription: 'Remove Nano Banana watermarks from your marathon and race photos. Free AI-powered watermark removal tool.'
+    metaDescription: 'Remove Nano Banana watermarks from your generated photos. Free AI-powered watermark removal tool.'
   }
 }
 
