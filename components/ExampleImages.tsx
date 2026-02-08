@@ -19,7 +19,6 @@ function base64ToBlob(base64: string): Blob {
 
 const examples = [
   { id: 1, src: '/examples/hug-couple-beach.jpg', alt: 'Couple hugging on beach' },
-  { id: 2, src: '/examples/bottomless-girl.jpg', alt: 'Girl portrait' },
   { id: 3, src: '/examples/football-match.jpg', alt: 'Football match' },
   { id: 4, src: '/examples/two-girls-showering.jpg', alt: 'Two girls' }
 ]
@@ -96,7 +95,7 @@ export default function ExampleImages() {
     <>
       <div className="mt-6">
         <p className="text-sm text-gray-500 mb-3">Try with examples:</p>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+        <div className="grid grid-cols-3 gap-3 sm:gap-4">
           {validExamples.map((example) => (
             <button
               key={example.id}
