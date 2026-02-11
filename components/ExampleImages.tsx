@@ -18,9 +18,9 @@ function base64ToBlob(base64: string): Blob {
 }
 
 const examples = [
-  { id: 1, src: '/examples/hug-couple-beach.jpg', alt: 'Couple hugging on beach' },
-  { id: 3, src: '/examples/football-match.jpg', alt: 'Football match' },
-  { id: 4, src: '/examples/two-girls-showering.jpg', alt: 'Two girls' }
+  { id: 1, src: '/examples/football-match.jpg', alt: 'Football match' },
+  { id: 2, src: '/examples/fotop-example.jpg', alt: 'Race Competition' },
+  { id: 3, src: '/examples/gemini-generated-image.png', alt: 'AI Generated Image' },
 ]
 
 export default function ExampleImages() {
@@ -95,14 +95,14 @@ export default function ExampleImages() {
     <>
       <div className="mt-6">
         <p className="text-sm text-gray-500 mb-3">Try with examples:</p>
-        <div className="grid grid-cols-3 gap-3 sm:gap-4">
+        <div className="grid grid-cols-3 gap-3 sm:gap-4 h-[32dvh]">
           {validExamples.map((example) => (
             <button
               key={example.id}
               onClick={() => handleExampleClick(example)}
               disabled={remainingToday <= 0 || processingId !== null}
               className={`
-                relative aspect-square rounded-lg overflow-hidden
+                relative rounded-lg overflow-hidden
                 border-2 border-transparent hover:border-gray-300
                 transition-all duration-200
                 ${remainingToday <= 0 ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
@@ -111,7 +111,7 @@ export default function ExampleImages() {
               <img
                 src={example.src}
                 alt={example.alt}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover object-bottom-right"
               />
               {processingId === example.id && (
                 <div className="absolute inset-0 flex items-center justify-center bg-white/80">
