@@ -94,7 +94,7 @@ export default function ExampleImages() {
   return (
     <>
       <div className="mt-6">
-        <p className="text-sm text-gray-500 mb-3">Try with examples:</p>
+        <p className="text-sm text-gray-900 mb-3 font-bold">No image? Try with examples:</p>
         <div className="grid grid-cols-3 gap-3 sm:gap-4 h-[32dvh]">
           {validExamples.map((example) => (
             <button
