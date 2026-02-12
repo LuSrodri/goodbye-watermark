@@ -30,7 +30,7 @@ export default function ImageHistory() {
 
   if (isLoading) {
     return (
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 p-3 sm:p-4">
+      <div className="bg-white border-t border-gray-100 p-3 sm:p-4">
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
           <div className="flex items-center gap-2 text-gray-400">
             <Loader2 className="w-4 h-4 animate-spin" />
@@ -44,7 +44,7 @@ export default function ImageHistory() {
 
   if (history.length === 0) {
     return (
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 py-3 sm:py-4">
+      <div className="bg-white border-t border-gray-100 py-3 sm:py-4">
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-center">
           <FooterCredit />
         </div>
@@ -63,7 +63,7 @@ export default function ImageHistory() {
         onClose={() => setSelectedImage(null)}
       />
     )}
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg">
+    <div className="bg-white border-t border-gray-200 shadow-lg">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
         <div className="flex items-center justify-between mb-2 sm:mb-3">
           <div className="flex items-center gap-2 text-gray-600">
