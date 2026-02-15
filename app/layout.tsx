@@ -1,11 +1,28 @@
 import type { Metadata, Viewport } from 'next'
 import { Analytics } from '@vercel/analytics/next'
-import { Inter } from 'next/font/google'
+import { Space_Grotesk } from 'next/font/google'
+import localFont from 'next/font/local'
 import './globals.css'
 
-const inter = Inter({
+const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
-  display: 'swap'
+  display: 'swap',
+  variable: '--font-space-grotesk',
+})
+
+const sentient = localFont({
+  src: [
+    {
+      path: './assets/fonts/Sentient-complete/fonts/Sentient-Variable.woff2',
+      style: 'normal',
+    },
+    {
+      path: './assets/fonts/Sentient-complete/fonts/Sentient-VariableItalic.woff2',
+      style: 'italic',
+    },
+  ],
+  variable: '--font-sentient',
+  display: 'swap',
 })
 
 export const viewport: Viewport = {
@@ -40,7 +57,7 @@ export default function RootLayout({
         <link rel="icon" href="/goodbyewatermark.com-logo-favicon.png" type="image/png" />
         <link rel="apple-touch-icon" href="/goodbyewatermark.com-logo-favicon.png" />
       </head>
-      <body className={`${inter.className} antialiased`}>
+      <body className={`${spaceGrotesk.variable} ${sentient.variable} font-sans antialiased`}>
         {children}
         <Analytics/>
       </body>

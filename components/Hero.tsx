@@ -18,7 +18,7 @@ export default function Hero({ sloganData }: Props) {
         priority
         className="mb-6 sm:mb-8 w-[100%] h-auto self-center"
       />
-      <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 tracking-tight text-center lg:text-left">
+      <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 tracking-tight text-center lg:text-left font-heading">
         {sloganData.slogan}
       </h1>
       <p className="mt-3 sm:mt-4 text-base sm:text-lg text-gray-600 max-w-md text-center lg:text-left px-4 sm:px-0">

@@ -155,7 +155,7 @@ export default function ProcessedImageModal({ image, onClose, title = "Watermark
               <Sparkles className="w-4 h-4 text-white" />
             </div>
             <div>
-              <h3 className="text-base md:text-lg font-semibold text-gray-900">{title}</h3>
+              <h3 className="text-base md:text-lg font-bold text-gray-900 font-heading">{title}</h3>
               <p className="hidden sm:block text-xs text-gray-500">Your image is ready</p>
             </div>
           </div>
