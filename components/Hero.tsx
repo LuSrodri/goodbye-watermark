@@ -11,12 +11,12 @@ export default function Hero({ sloganData }: Props) {
   return (
     <div className="flex flex-col items-center lg:items-start">
       <Image
-        src="/goodbyewatermark.com-logo-hero.png"
+        src="/goodbyewatermark-hero.png"
         alt="Goodbye Watermark"
-        width={560}
-        height={280}
+        width={480}
+        height={480}
         priority
-        className="mb-6 sm:mb-8 w-[100%] h-auto self-center"
+        className="mb-6 sm:mb-8 w-[80%] h-auto self-center"
       />
       <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 tracking-tight text-center lg:text-left font-heading">
         {sloganData.slogan}

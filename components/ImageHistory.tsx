@@ -89,7 +89,7 @@ export default function ImageHistory() {
               <button
                 key={image.id}
                 onClick={() => setSelectedImage(image)}
-                className="flex-shrink-0 group"
+                className="flex-shrink-0 group cursor-pointer"
               >
                 <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-lg overflow-hidden bg-gray-100 ring-2 ring-transparent group-hover:ring-gray-300 transition-all">
                   <img
