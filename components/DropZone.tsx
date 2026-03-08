@@ -205,12 +205,12 @@ export default function DropZone() {
         <div className="mt-3 sm:mt-4 flex items-center justify-between text-xs sm:text-sm">
           <div className="flex items-center gap-2 text-gray-500">
             <div className={`w-2 h-2 rounded-full ${remainingToday > 0 ? 'bg-green-500' : 'bg-red-500'}`} />
-            <span>{remainingToday}/5 remaining</span>
+            <span>{remainingToday}/5 remaining today. Tomorrow you'll have 5 more!</span>
           </div>
           {remainingToday > 0 && (
             <div className="flex items-center gap-1 text-gray-400">
               <Check className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span>Free, no signup</span>
+              <span>Free, no signup, credit refresh daily</span>
             </div>
           )}
         </div>
