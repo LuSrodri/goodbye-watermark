@@ -2,9 +2,9 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'How to Detect & Remove Invisible AI Watermarks (SynthID and Others) - Goodbye Watermark',
+  title: 'How to Detect & Remove Invisible AI Watermarks (SynthID and Others)',
   description:
-    "Learn what invisible AI watermarks like Google's SynthID are, how they work, why they exist, and what you can do about them. A clear, no-hype guide.",
+    "Learn what invisible AI watermarks like Google's SynthID are, how they work, why they exist, and how AI image processing can disrupt them.",
   keywords: [
     'remove SynthID watermark',
     'invisible AI watermark',
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'How to Detect & Remove Invisible AI Watermarks (SynthID and Others)',
     description:
-      "Learn what invisible AI watermarks like Google's SynthID are, how they work, why they exist, and what you can do about them.",
+      "Learn what invisible AI watermarks like Google's SynthID are, how they work, and how AI image processing can disrupt them.",
     url: 'https://goodbyewatermark.com/blog/how-to-detect-and-remove-invisible-ai-watermarks',
     siteName: 'Goodbye Watermark',
     locale: 'en_US',
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'How to Detect & Remove Invisible AI Watermarks (SynthID and Others)',
     description:
-      "Learn what invisible AI watermarks like Google's SynthID are, how they work, why they exist, and what you can do about them.",
+      "Learn what invisible AI watermarks like Google's SynthID are, how they work, and how AI image processing can disrupt them.",
   },
   alternates: {
     canonical: 'https://goodbyewatermark.com/blog/how-to-detect-and-remove-invisible-ai-watermarks',
@@ -38,182 +38,302 @@ export const metadata: Metadata = {
 export default function InvisibleWatermarkArticle() {
   return (
     <div className="min-h-screen bg-white">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-12 sm:py-20">
-        {/* Back link */}
-        <Link
-          href="/"
-          className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 mb-10 transition-colors"
-        >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M10 12L6 8l4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          Goodbye Watermark
-        </Link>
 
-        {/* Header */}
-        <header className="mb-10">
-          <p className="text-sm font-medium text-indigo-600 mb-3 uppercase tracking-wide">Guide</p>
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight leading-tight mb-4 font-heading">
-            How to Detect & Remove Invisible AI Watermarks
+      {/* Top nav */}
+      <header className="border-b border-gray-100">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+          <Link href="/" className="text-sm font-medium text-gray-900 hover:text-gray-600 transition-colors">
+            Goodbye Watermark
+          </Link>
+          <Link
+            href="/"
+            className="text-xs font-medium bg-gray-900 text-white px-3 py-1.5 rounded-full hover:bg-gray-700 transition-colors"
+          >
+            Try the tool →
+          </Link>
+        </div>
+      </header>
+
+      <div className="max-w-3xl mx-auto px-4 sm:px-6">
+
+        {/* Hero */}
+        <div className="py-12 sm:py-16 border-b border-gray-100">
+          <p className="text-xs font-semibold uppercase tracking-widest text-indigo-500 mb-4">Guide</p>
+          <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight mb-5">
+            Invisible AI Watermarks:<br className="hidden sm:block" /> What They Are and How to Remove Them
           </h1>
-          <p className="text-lg text-gray-500 leading-relaxed">
-            Google&rsquo;s SynthID, C2PA, and other invisible watermarks explained — what they are, why they exist, and what you can actually do about them.
+          <p className="text-lg sm:text-xl text-gray-500 leading-relaxed max-w-2xl">
+            Google&rsquo;s SynthID, C2PA, and steganographic signals — decoded. How they work, why they exist, and what actually disrupts them.
           </p>
-        </header>
-
-        {/* Article body */}
-        <article className="prose prose-gray max-w-none prose-headings:font-heading prose-headings:font-bold prose-a:text-indigo-600 prose-a:no-underline hover:prose-a:underline">
-
-          <h2>What is an invisible AI watermark?</h2>
-          <p>
-            When you generate an image with tools like Google&rsquo;s Imagen, Gemini, Adobe Firefly, or Stable Diffusion, the resulting file often contains more than meets the eye. Alongside the visible pixels, AI companies embed a hidden signal — an <strong>invisible watermark</strong> — designed to identify the image as AI-generated.
-          </p>
-          <p>
-            Unlike the visible watermarks you&rsquo;re used to (logos, text overlays, semi-transparent stamps), these signals are imperceptible to the human eye. You cannot see them, but specialized tools can detect them.
-          </p>
-
-          <h2>The main types: SynthID, C2PA, and steganographic watermarks</h2>
-
-          <h3>Google SynthID</h3>
-          <p>
-            <strong>SynthID</strong> is Google DeepMind&rsquo;s watermarking system, used across Imagen, Veo (video), Lyria (audio), and Gemini-generated text. As of late 2025, it has watermarked over <strong>10 billion pieces of content</strong>.
-          </p>
-          <p>
-            SynthID works by subtly altering pixel values in the frequency domain of the image — essentially modifying patterns that are invisible to humans but detectable by a trained model. The watermark is designed to survive common transformations like cropping, resizing, JPEG compression, and basic color adjustments.
-          </p>
-          <p>
-            You can check if an image contains a SynthID watermark using Google&rsquo;s own{' '}
-            <a href="https://aisandbox.withgoogle.com/" target="_blank" rel="noopener noreferrer">
-              SynthID demo
-            </a>{' '}
-            or compatible detection tools.
-          </p>
-
-          <h3>C2PA (Coalition for Content Provenance and Authenticity)</h3>
-          <p>
-            C2PA is an industry standard backed by Adobe, Microsoft, Google, Sony, and others. Instead of hiding a signal inside pixels, C2PA attaches a cryptographically signed <strong>manifest</strong> to the file&rsquo;s metadata. This manifest records the content&rsquo;s origin: who created it, when, and with what tool.
-          </p>
-          <p>
-            C2PA credentials are <em>easier</em> to remove than SynthID — simply re-saving or converting the file often strips the metadata. However, that also breaks the chain of trust, which is precisely its limitation as a provenance system.
-          </p>
-          <p>
-            Adobe Content Credentials (used in Firefly-generated images) are based on C2PA. You can inspect them at{' '}
-            <a href="https://contentcredentials.org/verify" target="_blank" rel="noopener noreferrer">
-              contentcredentials.org/verify
-            </a>
-            .
-          </p>
-
-          <h3>Steganographic watermarks</h3>
-          <p>
-            Some providers use classical <strong>steganography</strong> — hiding a binary payload inside the least significant bits of pixel color values. This is the oldest form of digital watermarking and is more fragile than SynthID: aggressive compression, resizing, or re-encoding typically destroys it.
-          </p>
-          <p>
-            Stable Diffusion and several open-source image generators use steganographic watermarks by default.
-          </p>
-
-          <h2>Why do these watermarks exist?</h2>
-          <p>The stated goals are generally:</p>
-          <ul>
-            <li><strong>Provenance and transparency</strong> — letting people verify whether content is AI-generated, especially as deepfakes proliferate.</li>
-            <li><strong>Platform policy enforcement</strong> — helping platforms detect and label AI content per emerging regulations (EU AI Act, US executive orders).</li>
-            <li><strong>Copyright protection</strong> — some providers use watermarks to track unauthorized redistribution of their generated content.</li>
-          </ul>
-          <p>
-            The intent is largely defensive. SynthID, in particular, was developed in response to growing concerns about AI-generated misinformation.
-          </p>
-
-          <h2>Can invisible watermarks actually be removed?</h2>
-          <p>
-            Technically, yes — but with important caveats.
-          </p>
-          <p>
-            <strong>SynthID</strong> is the hardest to remove. It is distributed across the entire image rather than stored in a specific location. Research has shown that diffusion model re-rendering can break it with around 79% success, but this also degrades image quality. Several online tools claim to use &ldquo;frequency-aware pixel perturbation&rdquo; to disrupt the watermark signal while keeping the image visually unchanged — results vary and are not guaranteed.
-          </p>
-          <p>
-            <strong>C2PA / metadata watermarks</strong> are trivially removable: a simple format conversion (e.g., saving as a new PNG), stripping EXIF data, or using any tool that discards metadata will eliminate them. The trade-off is losing the content&rsquo;s verifiable provenance chain.
-          </p>
-          <p>
-            <strong>Steganographic watermarks</strong> are generally fragile and often disappear with JPEG re-compression at lower quality settings, aggressive resizing, or image editing.
-          </p>
-
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 my-6 not-prose">
-            <p className="text-sm text-amber-800">
-              <strong>A note on ethics and legality:</strong> Removing invisible watermarks to misrepresent AI-generated content as human-made can violate platform terms of service and, in some jurisdictions, emerging AI transparency laws. Use this information responsibly.
-            </p>
+          <div className="mt-6 flex items-center gap-3 text-sm text-gray-400">
+            <span>Goodbye Watermark</span>
+            <span>·</span>
+            <span>5 min read</span>
           </div>
+        </div>
 
-          <h2>What about visible watermarks?</h2>
-          <p>
-            Visible watermarks are a different problem entirely — and a much more common one. Stock photo sites like Getty, Shutterstock, and Freepik add semi-transparent logos or text overlays to preview images. AI generators like Midjourney (on free plans) add their logo to exports.
-          </p>
-          <p>
-            These are the watermarks most people actually need to remove for legitimate use cases: you licensed an image but the watermark is embedded in the file, you received a preview from a client, or you want to clean up your own AI-generated images.
-          </p>
-          <p>
-            <strong>Goodbye Watermark</strong> uses AI to detect and remove visible watermarks from images — for free, with no signup required.
-          </p>
+        {/* Body */}
+        <div className="py-10 sm:py-14 space-y-10">
 
-          {/* CTA */}
-          <div className="not-prose my-8">
+          {/* Section */}
+          <section>
+            <h2 className="font-heading text-2xl font-bold text-gray-900 mb-4">What is an invisible AI watermark?</h2>
+            <div className="space-y-4 text-gray-600 leading-relaxed">
+              <p>
+                When you generate an image with tools like Google&rsquo;s Imagen, Gemini, Adobe Firefly, or Stable Diffusion, the resulting file often contains more than what you can see. Alongside the visible pixels, AI companies embed a hidden signal — an <strong className="text-gray-900 font-medium">invisible watermark</strong> — designed to identify the content as AI-generated.
+              </p>
+              <p>
+                Unlike the visible watermarks you&rsquo;re used to (logos, text overlays, semi-transparent stamps), these signals are imperceptible to the human eye. You cannot see them, but specialized tools can detect them — and platforms increasingly use them to label or restrict AI-generated content.
+              </p>
+            </div>
+          </section>
+
+          {/* Divider */}
+          <hr className="border-gray-100" />
+
+          {/* Section */}
+          <section>
+            <h2 className="font-heading text-2xl font-bold text-gray-900 mb-6">The main types</h2>
+
+            <div className="space-y-8">
+              {/* SynthID */}
+              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-6">
+                <div className="flex items-start gap-4">
+                  <div className="mt-0.5 flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                    <span className="text-blue-600 text-xs font-bold">G</span>
+                  </div>
+                  <div>
+                    <h3 className="font-heading text-lg font-bold text-gray-900 mb-2">Google SynthID</h3>
+                    <div className="space-y-3 text-sm text-gray-600 leading-relaxed">
+                      <p>
+                        SynthID is Google DeepMind&rsquo;s watermarking system, embedded across Imagen, Veo (video), Lyria (audio), and Gemini-generated content. As of late 2025, it has watermarked over <strong className="text-gray-800">10 billion pieces of content</strong>.
+                      </p>
+                      <p>
+                        It works by subtly altering pixel values in the <strong className="text-gray-800">frequency domain</strong> of the image — modifying patterns invisible to humans but detectable by a trained model. It&rsquo;s designed to survive cropping, resizing, JPEG compression, and basic color adjustments.
+                      </p>
+                    </div>
+                    <p className="mt-3 text-xs text-gray-400">Strength: High &nbsp;·&nbsp; Survives: Most edits &nbsp;·&nbsp; Detectable via: Google&rsquo;s SynthID tool</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* C2PA */}
+              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-6">
+                <div className="flex items-start gap-4">
+                  <div className="mt-0.5 flex-shrink-0 w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
+                    <span className="text-purple-600 text-xs font-bold">C</span>
+                  </div>
+                  <div>
+                    <h3 className="font-heading text-lg font-bold text-gray-900 mb-2">C2PA / Content Credentials</h3>
+                    <div className="space-y-3 text-sm text-gray-600 leading-relaxed">
+                      <p>
+                        C2PA is an industry standard backed by Adobe, Microsoft, Google, and Sony. Instead of hiding a signal inside pixels, it attaches a cryptographically signed <strong className="text-gray-800">manifest to the file&rsquo;s metadata</strong>. This manifest records the content&rsquo;s origin: who created it, when, and with what tool.
+                      </p>
+                      <p>
+                        Adobe Content Credentials (used in Firefly-generated images) are based on C2PA. Unlike SynthID, C2PA credentials are easily removed — simply re-saving or converting the file often strips the metadata.
+                      </p>
+                    </div>
+                    <p className="mt-3 text-xs text-gray-400">Strength: Low &nbsp;·&nbsp; Survives: Basic edits only &nbsp;·&nbsp; Detectable via: contentcredentials.org/verify</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Steganographic */}
+              <div className="rounded-2xl border border-gray-100 bg-gray-50 p-6">
+                <div className="flex items-start gap-4">
+                  <div className="mt-0.5 flex-shrink-0 w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                    <span className="text-green-600 text-xs font-bold">S</span>
+                  </div>
+                  <div>
+                    <h3 className="font-heading text-lg font-bold text-gray-900 mb-2">Steganographic watermarks</h3>
+                    <div className="space-y-3 text-sm text-gray-600 leading-relaxed">
+                      <p>
+                        Some providers use classical steganography — hiding a binary payload inside the <strong className="text-gray-800">least significant bits</strong> of pixel color values. This is the oldest form of digital watermarking. Stable Diffusion uses it by default.
+                      </p>
+                      <p>
+                        These are the most fragile: aggressive JPEG compression, resizing, or re-encoding typically destroys them entirely.
+                      </p>
+                    </div>
+                    <p className="mt-3 text-xs text-gray-400">Strength: Low &nbsp;·&nbsp; Survives: Minimal edits &nbsp;·&nbsp; Detectable via: Specialized LSB tools</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <hr className="border-gray-100" />
+
+          {/* Section */}
+          <section>
+            <h2 className="font-heading text-2xl font-bold text-gray-900 mb-4">Why do these watermarks exist?</h2>
+            <div className="space-y-4 text-gray-600 leading-relaxed">
+              <p>The stated goals are generally:</p>
+              <ul className="space-y-2 pl-4">
+                {[
+                  ['Provenance & transparency', 'letting platforms and users verify whether content is AI-generated, especially as deepfakes proliferate.'],
+                  ['Platform policy enforcement', 'helping platforms detect and label AI content per emerging regulations (EU AI Act, US executive orders).'],
+                  ['Copyright tracking', 'some providers use watermarks to monitor unauthorized redistribution of their generated content.'],
+                ].map(([term, def]) => (
+                  <li key={term} className="flex gap-2">
+                    <span className="mt-1.5 flex-shrink-0 w-1.5 h-1.5 rounded-full bg-gray-300" />
+                    <span><strong className="text-gray-900 font-medium">{term}</strong> — {def}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+
+          <hr className="border-gray-100" />
+
+          {/* Section — the key one, with honest claim */}
+          <section>
+            <h2 className="font-heading text-2xl font-bold text-gray-900 mb-4">Can invisible watermarks be removed?</h2>
+            <div className="space-y-4 text-gray-600 leading-relaxed">
+              <p>
+                Technically, yes — but with caveats that depend on the type.
+              </p>
+
+              <div className="space-y-3">
+                <div>
+                  <p className="font-medium text-gray-900">SynthID</p>
+                  <p className="text-sm">
+                    The hardest to remove. Research shows that <strong className="text-gray-800">diffusion model re-rendering disrupts it with ~79% success</strong>, because the process rewrites pixel statistics across the entire image, destroying the frequency-domain patterns where the watermark lives. Other methods — aggressive filters, format re-encoding — degrade detection confidence rather than eliminate the signal completely.
+                  </p>
+                </div>
+                <div>
+                  <p className="font-medium text-gray-900">C2PA / metadata</p>
+                  <p className="text-sm">
+                    Trivially removable: a simple format conversion (PNG → JPG), stripping EXIF data, or re-saving in any editor that discards metadata eliminates it. The trade-off is losing the verifiable provenance chain.
+                  </p>
+                </div>
+                <div>
+                  <p className="font-medium text-gray-900">Steganographic</p>
+                  <p className="text-sm">
+                    Generally fragile. JPEG re-compression at lower quality, aggressive resizing, or any re-encoding operation typically destroys LSB-based watermarks.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Callout — honest claim about Goodbye Watermark */}
+          <div className="rounded-2xl bg-gray-900 text-white p-8">
+            <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">How Goodbye Watermark works</p>
+            <h3 className="font-heading text-xl sm:text-2xl font-bold mb-3 leading-snug">
+              AI image regeneration disrupts invisible watermarks as a side effect
+            </h3>
+            <div className="space-y-3 text-sm text-gray-300 leading-relaxed">
+              <p>
+                Goodbye Watermark uses a multimodal AI model to edit your image — rewriting pixel values throughout the entire frame to cleanly remove visible watermarks like logos, text overlays, and stamps.
+              </p>
+              <p>
+                Because this process <strong className="text-white">regenerates pixel statistics from scratch</strong>, it also disrupts frequency-domain signals like SynthID — the same mechanism behind diffusion re-rendering, which research places at ~79% effectiveness. C2PA metadata is discarded entirely in the output file.
+              </p>
+              <p className="text-gray-400 text-xs">
+                Note: this is a byproduct of how the model works, not a guaranteed feature. Results may vary by image and watermark strength.
+              </p>
+            </div>
             <Link
               href="/"
-              className="inline-flex items-center gap-2 bg-gray-900 text-white text-sm font-medium px-5 py-3 rounded-lg hover:bg-gray-700 transition-colors"
+              className="mt-6 inline-flex items-center gap-2 bg-white text-gray-900 text-sm font-medium px-5 py-2.5 rounded-full hover:bg-gray-100 transition-colors"
             >
-              Remove visible watermarks for free
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              Try it free — no signup
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </Link>
           </div>
 
-          <h2>Detecting AI watermarks: tools and methods</h2>
-          <ul>
-            <li>
-              <strong>SynthID Detector</strong> — Google provides a{' '}
-              <a href="https://aisandbox.withgoogle.com/" target="_blank" rel="noopener noreferrer">
-                public demo
-              </a>{' '}
-              where you can upload images to check for a SynthID signal.
-            </li>
-            <li>
-              <strong>Content Credentials Verify</strong> — Adobe&rsquo;s{' '}
-              <a href="https://contentcredentials.org/verify" target="_blank" rel="noopener noreferrer">
-                verification tool
-              </a>{' '}
-              checks for C2PA manifests and shows you the full provenance chain.
-            </li>
-            <li>
-              <strong>ExifTool</strong> — a free command-line tool that reads all metadata from image files, including C2PA and standard EXIF fields. Useful for inspecting what a file contains.
-            </li>
-            <li>
-              <strong>Hive Moderation</strong> — offers an API-based AI content detector that can classify images as AI-generated with high accuracy, regardless of watermark presence.
-            </li>
-          </ul>
+          <hr className="border-gray-100" />
 
-          <h2>The bottom line</h2>
-          <p>
-            Invisible AI watermarks are becoming standard practice as the industry grapples with provenance, transparency, and regulation. SynthID is the most robust, C2PA is the most interoperable, and steganographic approaches are the most fragile.
-          </p>
-          <p>
-            For most users, the watermark you actually care about removing is the <em>visible</em> one — the logo slapped on a preview image or an AI generator&rsquo;s branding. That&rsquo;s exactly what Goodbye Watermark is built to handle.
-          </p>
+          {/* Section */}
+          <section>
+            <h2 className="font-heading text-2xl font-bold text-gray-900 mb-4">Detecting AI watermarks: tools</h2>
+            <div className="space-y-3">
+              {[
+                {
+                  name: 'SynthID Detector',
+                  desc: "Google's public tool for checking images generated by Imagen or Gemini for a SynthID signal.",
+                  href: 'https://aisandbox.withgoogle.com/',
+                },
+                {
+                  name: 'Content Credentials Verify',
+                  desc: "Adobe's verification tool that reads C2PA manifests and displays the full provenance chain.",
+                  href: 'https://contentcredentials.org/verify',
+                },
+                {
+                  name: 'ExifTool',
+                  desc: 'Free command-line tool that reads all metadata from image files, including C2PA and standard EXIF fields.',
+                  href: null,
+                },
+                {
+                  name: 'Hive Moderation',
+                  desc: 'API-based AI content detector that classifies images as AI-generated with high accuracy, regardless of watermark presence.',
+                  href: null,
+                },
+              ].map((tool) => (
+                <div key={tool.name} className="flex gap-4 py-4 border-b border-gray-50 last:border-0">
+                  <div className="mt-0.5 flex-shrink-0 w-1.5 h-1.5 rounded-full bg-indigo-400 mt-2" />
+                  <div>
+                    <p className="font-medium text-gray-900 text-sm">{tool.name}</p>
+                    <p className="text-sm text-gray-500 mt-0.5">{tool.desc}</p>
+                    {tool.href && (
+                      <a
+                        href={tool.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-indigo-500 hover:text-indigo-700 mt-1 inline-block transition-colors"
+                      >
+                        {tool.href.replace('https://', '')} →
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
 
-        </article>
+          <hr className="border-gray-100" />
 
-        {/* Footer CTA */}
-        <div className="mt-12 pt-8 border-t border-gray-100">
-          <p className="text-sm text-gray-500 mb-3">Got a visible watermark to remove?</p>
+          {/* Ethics note */}
+          <div className="rounded-xl border border-amber-100 bg-amber-50 p-5">
+            <p className="text-sm text-amber-900">
+              <strong>Ethics note:</strong> Removing invisible watermarks to misrepresent AI-generated content as human-made can violate platform terms of service and, in some jurisdictions, emerging AI transparency laws. Use this information responsibly.
+            </p>
+          </div>
+
+          {/* TL;DR */}
+          <section>
+            <h2 className="font-heading text-2xl font-bold text-gray-900 mb-4">The bottom line</h2>
+            <div className="space-y-4 text-gray-600 leading-relaxed">
+              <p>
+                Invisible AI watermarks are becoming standard practice as the industry grapples with provenance, transparency, and regulation. SynthID is the most robust, C2PA is the most interoperable, and steganographic approaches are the most fragile.
+              </p>
+              <p>
+                For most users, the watermark you actually need to remove is the <em>visible</em> one — the logo on a preview image, a stock photo stamp, or an AI generator&rsquo;s branding. As a byproduct of full-image AI regeneration, invisible watermarks are often disrupted in the process too.
+              </p>
+            </div>
+          </section>
+
+        </div>
+
+        {/* Footer */}
+        <div className="py-10 border-t border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <p className="font-medium text-gray-900 text-sm">Ready to remove a watermark?</p>
+            <p className="text-xs text-gray-400 mt-0.5">Free, no signup required. 5 images per day.</p>
+          </div>
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-sm font-medium text-gray-900 hover:text-indigo-600 transition-colors"
+            className="inline-flex items-center gap-2 bg-gray-900 text-white text-sm font-medium px-5 py-2.5 rounded-full hover:bg-gray-700 transition-colors"
           >
-            Try Goodbye Watermark — free, no signup
+            Open Goodbye Watermark
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
               <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </Link>
         </div>
+
       </div>
     </div>
   )
