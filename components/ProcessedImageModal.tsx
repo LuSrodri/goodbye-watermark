@@ -127,7 +127,7 @@ export default function ProcessedImageModal({ image, onClose, title = "Watermark
     >
       <div
         ref={modalRef}
-        className={`relative w-full md:max-w-2xl lg:max-w-3xl xl:max-w-4xl bg-white md:rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 ease-out will-change-transform ${
+        className={`relative flex flex-col w-full md:max-w-2xl lg:max-w-3xl xl:max-w-4xl bg-white md:rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 ease-out will-change-transform ${
           isVisible && !isClosing
             ? 'translate-y-0 opacity-100 scale-100'
             : 'translate-y-full md:translate-y-8 opacity-0 md:scale-95'
@@ -161,7 +161,7 @@ export default function ProcessedImageModal({ image, onClose, title = "Watermark
           </div>
           <button
             onClick={handleClose}
-            className="p-2 md:p-2.5 rounded-full hover:bg-gray-100 active:bg-gray-200 transition-colors touch-manipulation"
+            className="p-2 md:p-2.5 rounded-full hover:bg-gray-100 active:bg-gray-200 transition-colors touch-manipulation cursor-pointer"
             aria-label="Close modal"
           >
             <X className="w-5 h-5 md:w-6 md:h-6 text-gray-500" />
@@ -169,13 +169,10 @@ export default function ProcessedImageModal({ image, onClose, title = "Watermark
         </div>
 
         {/* Image Container */}
-        <div className="relative bg-gradient-to-b from-gray-50 to-gray-100 overflow-hidden">
+        <div className="relative flex-1 min-h-0 bg-gradient-to-b from-gray-50 to-gray-100 overflow-hidden">
           <div
-            className="relative w-full overflow-auto"
-            style={{
-              maxHeight: 'calc(100vh - 200px)',
-              minHeight: '200px'
-            }}
+            className="relative w-full h-full overflow-auto"
+            style={{ minHeight: '120px' }}
           >
             {/* Loading skeleton */}
             {!imageLoaded && (
@@ -245,6 +242,24 @@ export default function ProcessedImageModal({ image, onClose, title = "Watermark
               </>
             )}
           </button>
+        </div>
+
+        {/* Cross-sell */}
+        <div className="px-4 pb-4 md:px-5 md:pb-5">
+          <a
+            href="https://ihatebackground.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 border border-gray-100 hover:bg-gray-100 hover:border-gray-200 transition-all group"
+          >
+            <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg shrink-0">
+              <Sparkles className="w-4 h-4 text-white" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs md:text-sm font-semibold text-gray-700 group-hover:text-gray-900 transition-colors">Also need to remove the background?</p>
+              <p className="text-xs md:text-sm text-gray-400 truncate">Try <span className="text-violet-600">ihatebackground.com</span> — free, private &amp; unlimited</p>
+            </div>
+          </a>
         </div>
       </div>
     </div>
