@@ -14,6 +14,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   ]
 
+  // Blog pages
+  const blogPages: MetadataRoute.Sitemap = [
+    {
+      url: `${siteUrl}/blog/how-to-detect-and-remove-invisible-ai-watermarks`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.9
+    }
+  ]
+
   // pSEO pages
   const seoPages: MetadataRoute.Sitemap = getAllSlugs().map((slug) => ({
     url: `${siteUrl}/${slug}`,
@@ -22,5 +32,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8
   }))
 
-  return [...staticPages, ...seoPages]
+  return [...staticPages, ...blogPages, ...seoPages]
 }
