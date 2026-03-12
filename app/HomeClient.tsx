@@ -16,7 +16,7 @@ export default function HomeClient({ sloganData }: Props) {
     <SessionProvider>
       <div className="min-h-screen bg-white flex flex-col">
         <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20 pb-36">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-6 items-center">
             <Hero sloganData={sloganData} />
             <div>
               <DropZone />

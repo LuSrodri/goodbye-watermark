@@ -17,7 +17,7 @@ export default function Hero({ sloganData }: Props) {
         width={480}
         height={480}
         priority
-        className="mb-6 sm:mb-8 w-[80%] h-auto self-center"
+        className="mb-6 sm:mb-8 w-[60%] h-auto self-center"
       />
       <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 tracking-tight text-center lg:text-left font-heading">
         {sloganData.slogan}

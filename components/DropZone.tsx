@@ -139,7 +139,7 @@ export default function DropZone() {
           onDragLeave={handleDragLeave}
           className={`
             relative flex flex-col items-center justify-center
-            w-full h-48 sm:h-64 rounded-2xl border-2 border-dashed
+            w-full h-[40dvh] min-h-[320px] rounded-2xl border-2 border-dashed
             transition-all duration-200 cursor-pointer
             ${isDragging
               ? 'border-blue-500 bg-blue-50'
@@ -205,7 +205,7 @@ export default function DropZone() {
         <div className="mt-3 sm:mt-4 flex items-center justify-between text-xs sm:text-sm">
           <div className="flex items-center gap-2 text-gray-500">
             <div className={`w-2 h-2 rounded-full ${remainingToday > 0 ? 'bg-green-500' : 'bg-red-500'}`} />
-            <span>{remainingToday}/5 remaining today</span>
+            <span>{remainingToday} credits to use today</span>
           </div>
           {remainingToday > 0 && (
             <div className="flex items-center gap-1 text-gray-400">
