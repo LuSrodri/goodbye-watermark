@@ -219,7 +219,7 @@ export default function ProcessedImageModal({ image, onClose, title = "Watermark
         <div className="flex gap-3 p-4 md:p-5 border-t border-gray-100 bg-white">
           <button
             onClick={handleDownload}
-            className="flex-1 flex items-center justify-center gap-2 py-3 md:py-3.5 px-4 md:px-6 bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-xl md:rounded-2xl text-sm md:text-base font-semibold hover:from-gray-800 hover:to-gray-700 active:scale-[0.98] transition-all shadow-lg shadow-gray-900/20 touch-manipulation"
+            className="flex-1 flex items-center justify-center gap-2 py-3 md:py-3.5 px-4 md:px-6 bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-xl md:rounded-2xl text-sm md:text-base font-semibold hover:from-gray-800 hover:to-gray-700 active:scale-[0.98] transition-all shadow-lg shadow-gray-900/20 touch-manipulation cursor-pointer"
           >
             <Download className="w-5 h-5" />
             <span>Download</span>
@@ -228,7 +228,7 @@ export default function ProcessedImageModal({ image, onClose, title = "Watermark
           <button
             onClick={handleShare}
             disabled={isSharing}
-            className="flex-1 flex items-center justify-center gap-2 py-3 md:py-3.5 px-4 md:px-6 rounded-xl md:rounded-2xl text-sm md:text-base font-semibold transition-all active:scale-[0.98] touch-manipulation bg-white text-gray-700 border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 flex items-center justify-center gap-2 py-3 md:py-3.5 px-4 md:px-6 rounded-xl md:rounded-2xl text-sm md:text-base font-semibold transition-all active:scale-[0.98] touch-manipulation bg-white text-gray-700 border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             {isSharing ? (
               <>

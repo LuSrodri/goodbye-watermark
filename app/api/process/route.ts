@@ -7,10 +7,11 @@ const replicate = new Replicate()
 async function processWithReplicate(imageBase64: string): Promise<ArrayBuffer> {
   const input = {
     image: [imageBase64],
-    prompt: "No one watermarks. Clean, high quality image.",
+    prompt: "Remove all watermarks and the image overlay elements. Be assertive. And keep the image quality and size.",
+    aspect_ratio: "match_input_image",
     disable_safety_checker: true,
-    output_quality: 100,
-    output_format: "webp"
+    output_format: "png",
+    go_fast: false,
   }
 
   const output = await replicate.run("qwen/qwen-image-edit-2511", { input })
