@@ -1,7 +1,7 @@
 'use client'
 
-import Image from 'next/image'
 import Link from 'next/link'
+import BeforeAfterSlider from './BeforeAfterSlider'
 import { SloganData } from '@/lib/slogans'
 
 interface Props {
@@ -10,15 +10,22 @@ interface Props {
 
 export default function Hero({ sloganData }: Props) {
   return (
-    <div className="flex flex-col items-center lg:items-start">
-      <Image
-        src="/goodbyewatermark-hero.png"
-        alt="Goodbye Watermark"
-        width={480}
-        height={480}
-        priority
-        className="mb-6 sm:mb-8 w-[60%] h-auto self-center"
-      />
+    <div className="flex flex-col items-stretch lg:items-start">
+      {/* Running man before/after — auto-animates on load, then interactive */}
+      <div className="relative mb-6 sm:mb-8">
+        <BeforeAfterSlider
+          beforeSrc="/before-after/running-man-witht-watermark-fotop.png"
+          afterSrc="/before-after/running-man-without-watermark-fotop.png"
+          autoAnimate
+          className="w-[60%] h-auto shadow-lg"
+        />
+        {/* Platform badge overlay */}
+        <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-white/90 backdrop-blur-sm rounded-full px-2.5 py-1 pointer-events-none z-20">
+          <span className="w-2 h-2 rounded-full bg-orange-400 inline-block" />
+          <span className="text-[10px] font-semibold text-gray-700 tracking-wide">Fotop</span>
+        </div>
+      </div>
+
       <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 tracking-tight text-center lg:text-left font-heading">
         {sloganData.slogan}
       </h1>
