@@ -139,7 +139,7 @@ export default function DropZone() {
           onDragLeave={handleDragLeave}
           className={`
             relative flex flex-col items-center justify-center
-            w-full h-[40dvh] min-h-[320px] rounded-2xl border-2 border-dashed
+            w-full h-[40dvh] min-h-[320px] max-h-[400px] rounded-2xl border-2 border-dashed
             transition-all duration-200 cursor-pointer
             ${isDragging
               ? 'border-blue-500 bg-blue-50'
