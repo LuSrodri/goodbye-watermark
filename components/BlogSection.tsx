@@ -7,7 +7,52 @@ const articles = [
     labelColor: 'bg-violet-100 text-violet-700',
     title: 'How to detect and remove invisible AI watermarks',
     description:
-      'SynthID, C2PA, and steganographic watermarks are embedded invisibly into AI-generated images. Learn how they work, why they exist, and the techniques used to detect or remove them.',
+      'SynthID, C2PA, and steganographic watermarks are embedded invisibly into AI-generated images. Learn how they work, why they exist, and how to remove them.',
+    readTime: '6 min read',
+  },
+  {
+    href: '/blog/remove-shutterstock-watermark-free',
+    label: 'Stock Photos',
+    labelColor: 'bg-orange-100 text-orange-700',
+    title: 'Remove Shutterstock watermarks free — without paying',
+    description:
+      'Shutterstock\'s diagonal watermark covers the entire image. Here\'s how AI handles it, what to expect by watermark type, and the legal path forward.',
+    readTime: '5 min read',
+  },
+  {
+    href: '/blog/remove-timestamp-watermark-from-old-photos',
+    label: 'Tutorial',
+    labelColor: 'bg-green-100 text-green-700',
+    title: 'Remove timestamp watermarks from old photos online',
+    description:
+      'Date stamps from film cameras, VHS frame grabs, and old digital cameras burn into memories. AI erases them cleanly — step by step.',
+    readTime: '5 min read',
+  },
+  {
+    href: '/blog/remove-watermark-from-graduation-photo',
+    label: 'Guide',
+    labelColor: 'bg-blue-100 text-blue-700',
+    title: 'Remove watermarks from graduation photos — free AI tool',
+    description:
+      'Photography studios put watermarks on preview shots to drive sales. Here\'s how to remove them, your rights, and the ethical path.',
+    readTime: '5 min read',
+  },
+  {
+    href: '/blog/best-free-ai-watermark-remover-no-output-watermark',
+    label: 'Comparison',
+    labelColor: 'bg-indigo-100 text-indigo-700',
+    title: 'Best free AI watermark removers that don\'t re-watermark your output',
+    description:
+      'Many free tools remove one watermark and add their own. We compared 6 tools to find which ones give you a truly clean image for free.',
+    readTime: '7 min read',
+  },
+  {
+    href: '/blog/remove-canva-watermark-free',
+    label: 'Guide',
+    labelColor: 'bg-amber-100 text-amber-700',
+    title: 'Remove Canva watermarks free — without Canva Pro',
+    description:
+      'Canva stamps a copyright mark on premium elements when you export without Pro. Here\'s what it is and your three options for removing it.',
     readTime: '6 min read',
   },
 ]
@@ -26,6 +71,15 @@ export default function BlogSection() {
               Learn about watermarks
             </h2>
           </div>
+          <Link
+            href="/blog"
+            className="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors"
+          >
+            View all articles
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </Link>
         </div>
 
         {/* Article cards */}
@@ -56,16 +110,19 @@ export default function BlogSection() {
               </div>
             </Link>
           ))}
+        </div>
 
-          {/* Placeholder card — encourages exploration */}
-          <div className="bg-white rounded-2xl p-6 border border-dashed border-gray-200 flex flex-col items-center justify-center text-center min-h-[180px]">
-            <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center mb-3">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <path d="M8 3v10M3 8h10" stroke="#9CA3AF" strokeWidth="1.5" strokeLinecap="round" />
-              </svg>
-            </div>
-            <p className="text-sm text-gray-400">More articles coming soon</p>
-          </div>
+        {/* Mobile view all link */}
+        <div className="mt-8 text-center sm:hidden">
+          <Link
+            href="/blog"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors"
+          >
+            View all articles
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </Link>
         </div>
       </div>
     </section>
