@@ -6,19 +6,39 @@ import { ProcessedImage } from '@/lib/types'
 import { getImageBlob } from '@/lib/db'
 
 interface Props {
-  image: ProcessedImage
+  image: ProcessedImage | null
   onClose: () => void
   title?: string
+  isProcessing?: boolean
+  originalSrc?: string
 }
 
-export default function ProcessedImageModal({ image, onClose, title = "Watermark Removed!" }: Props) {
+export default function ProcessedImageModal({
+  image,
+  onClose,
+  title = "Watermark Removed!",
+  isProcessing = false,
+  originalSrc,
+}: Props) {
   const [isSharing, setIsSharing] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
+  // Start at 0 if not processing (history view), 100 if processing (will animate to 0 on reveal)
+  const [revealPosition, setRevealPosition] = useState(isProcessing ? 100 : 0)
+  const [processingPosition, setProcessingPosition] = useState(0)
 
   const modalRef = useRef<HTMLDivElement>(null)
   const dragRef = useRef({ startY: 0, currentY: 0, isDragging: false })
+  const rafRef = useRef<number | null>(null)
+  const prevIsProcessing = useRef(isProcessing)
+  const revealStartRef = useRef<number | null>(null)
+  const processingStartRef = useRef<number | null>(null)
+
+  // revealPosition > 0 (while image is ready) means the reveal sweep is in progress
+  const revealInProgress = !isProcessing && image !== null && revealPosition > 0
+  const showOriginal = isProcessing || revealInProgress
+  const showProcessed = !isProcessing && image !== null
 
   useEffect(() => {
     requestAnimationFrame(() => setIsVisible(true))
@@ -28,9 +48,56 @@ export default function ProcessedImageModal({ image, onClose, title = "Watermark
     }
   }, [])
 
+  // Trigger reveal animation when processing finishes
+  useEffect(() => {
+    if (prevIsProcessing.current && !isProcessing && image) {
+      setRevealPosition(100)
+      revealStartRef.current = null
+
+      const animate = (ts: number) => {
+        if (!revealStartRef.current) revealStartRef.current = ts
+        const t = Math.min((ts - revealStartRef.current) / 1400, 1)
+        const eased = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
+        setRevealPosition(100 - eased * 100)
+        if (t < 1) {
+          rafRef.current = requestAnimationFrame(animate)
+        } else {
+          setRevealPosition(0)
+        }
+      }
+      rafRef.current = requestAnimationFrame(animate)
+    }
+    prevIsProcessing.current = isProcessing
+
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+    }
+  }, [isProcessing, image])
+
+  useEffect(() => {
+    if (isProcessing) {
+      processingStartRef.current = null
+
+      const animateProcessing = (ts: number) => {
+        if (!processingStartRef.current) processingStartRef.current = ts
+        const t = (ts - processingStartRef.current) / 2000
+        setProcessingPosition((t * 100) % 100)
+        rafRef.current = requestAnimationFrame(animateProcessing)
+      }
+      rafRef.current = requestAnimationFrame(animateProcessing)
+    } else {
+      setProcessingPosition(0)
+    }
+
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+    }
+  }, [isProcessing])
+
   const handleClose = useCallback(() => {
     setIsClosing(true)
     setIsVisible(false)
+    if (rafRef.current) cancelAnimationFrame(rafRef.current)
     setTimeout(onClose, 300)
   }, [onClose])
 
@@ -70,6 +137,7 @@ export default function ProcessedImageModal({ image, onClose, title = "Watermark
   }
 
   const handleDownload = async () => {
+    if (!image) return
     try {
       const blob = await getImageBlob(image.id)
       if (!blob) return
@@ -89,6 +157,7 @@ export default function ProcessedImageModal({ image, onClose, title = "Watermark
   }
 
   const handleShare = async () => {
+    if (!image) return
     setIsSharing(true)
     try {
       const blob = await getImageBlob(image.id)
@@ -105,11 +174,9 @@ export default function ProcessedImageModal({ image, onClose, title = "Watermark
           text: 'Check out this watermark-free image!',
         })
       } else {
-        // Fallback: download the image
         handleDownload()
       }
     } catch (error) {
-      // User cancelled share is not an error
       if (error instanceof Error && error.name !== 'AbortError') {
         console.error('Share failed:', error)
       }
@@ -120,18 +187,16 @@ export default function ProcessedImageModal({ image, onClose, title = "Watermark
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-end md:items-center justify-center transition-all duration-300 ease-out ${
-        isVisible && !isClosing ? 'bg-black/70 backdrop-blur-md' : 'bg-transparent'
-      }`}
+      className={`fixed inset-0 z-50 flex items-end md:items-center justify-center transition-all duration-300 ease-out ${isVisible && !isClosing ? 'bg-black/70 backdrop-blur-md' : 'bg-transparent'
+        }`}
       onClick={handleClose}
     >
       <div
         ref={modalRef}
-        className={`relative flex flex-col w-full md:max-w-2xl lg:max-w-3xl xl:max-w-4xl bg-white md:rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 ease-out will-change-transform ${
-          isVisible && !isClosing
-            ? 'translate-y-0 opacity-100 scale-100'
-            : 'translate-y-full md:translate-y-8 opacity-0 md:scale-95'
-        }`}
+        className={`relative flex flex-col w-full md:max-w-2xl lg:max-w-3xl xl:max-w-4xl bg-white md:rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 ease-out will-change-transform ${isVisible && !isClosing
+          ? 'translate-y-0 opacity-100 scale-100'
+          : 'translate-y-full md:translate-y-8 opacity-0 md:scale-95'
+          }`}
         style={{
           maxHeight: 'calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom))',
           paddingBottom: 'env(safe-area-inset-bottom)',
@@ -151,12 +216,16 @@ export default function ProcessedImageModal({ image, onClose, title = "Watermark
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 md:px-6 md:py-4 border-b border-gray-100">
           <div className="flex items-center gap-2">
-            <div className="hidden sm:flex items-center justify-center w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-lg">
+            <div className={`hidden sm:flex items-center justify-center w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-lg ${isProcessing ? 'animate-pulse' : ''}`}>
               <Sparkles className="w-4 h-4 text-white" />
             </div>
             <div>
-              <h3 className="text-base md:text-lg font-bold text-gray-900 font-heading">{title}</h3>
-              <p className="hidden sm:block text-xs text-gray-500">Your image is ready</p>
+              <h3 className="text-base md:text-lg font-bold text-gray-900 font-heading">
+                {isProcessing ? 'Removing watermark...' : title}
+              </h3>
+              <p className="hidden sm:block text-xs text-gray-500">
+                {isProcessing ? 'AI is working its magic' : 'Your image is ready'}
+              </p>
             </div>
           </div>
           <button
@@ -174,16 +243,6 @@ export default function ProcessedImageModal({ image, onClose, title = "Watermark
             className="relative w-full h-full overflow-auto"
             style={{ minHeight: '120px' }}
           >
-            {/* Loading skeleton */}
-            {!imageLoaded && (
-              <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-                <div className="flex flex-col items-center gap-3">
-                  <Loader2 className="w-8 h-8 text-gray-400 animate-spin" />
-                  <span className="text-sm text-gray-500">Loading image...</span>
-                </div>
-              </div>
-            )}
-
             {/* Checkerboard pattern for transparency */}
             <div
               className="absolute inset-0 opacity-50"
@@ -199,19 +258,86 @@ export default function ProcessedImageModal({ image, onClose, title = "Watermark
               }}
             />
 
-            <img
-              src={image.processed_url}
-              alt="Processed image"
-              className={`relative w-full h-auto object-contain transition-opacity duration-300 ${
-                imageLoaded ? 'opacity-100' : 'opacity-0'
-              }`}
-              style={{
-                maxHeight: 'calc(100vh - 200px)',
-                minHeight: '200px'
-              }}
-              onLoad={() => setImageLoaded(true)}
-              draggable={false}
-            />
+            {/* Original image — layout anchor during processing & reveal sweep */}
+            {showOriginal && originalSrc && (
+              <img
+                src={originalSrc}
+                alt="Original image"
+                className="relative w-full h-auto object-contain"
+                style={{ maxHeight: 'calc(100vh - 200px)', minHeight: '200px' }}
+                draggable={false}
+              />
+            )}
+
+            {/* Placeholder when no originalSrc during processing */}
+            {isProcessing && !originalSrc && (
+              <div
+                className="relative w-full bg-gray-200"
+                style={{ height: '300px', minHeight: '200px' }}
+              />
+            )}
+
+            {/* Processed image — absolute overlay during reveal, normal after */}
+            {showProcessed && (
+              <img
+                src={image!.processed_url}
+                alt="Processed image"
+                className={`object-contain transition-opacity duration-300 ${revealInProgress
+                  ? 'absolute inset-0 w-full h-full'
+                  : `relative w-full h-auto ${imageLoaded ? 'opacity-100' : 'opacity-0'}`
+                  }`}
+                style={{
+                  maxHeight: revealInProgress ? undefined : 'calc(100vh - 200px)',
+                  minHeight: revealInProgress ? undefined : '200px',
+                  clipPath: revealInProgress ? `inset(0 0 0 ${revealPosition}%)` : undefined,
+                }}
+                onLoad={() => setImageLoaded(true)}
+                draggable={false}
+              />
+            )}
+
+            {isProcessing && (
+              <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute inset-0 bg-black/[0.07]" />
+                <div
+                  className="absolute top-0 bottom-0 w-8 pointer-events-none z-10"
+                  style={{
+                    right: `${processingPosition}%`,
+                    transform: 'translateX(-50%)',
+                    background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.64), transparent)',
+                    mixBlendMode: 'screen',
+                    filter: 'blur(2px)',
+                  }}
+                />
+                <div className="absolute inset-0 flex items-end justify-center pb-6">
+                  <p className="text-xs font-medium text-white/80 tracking-widest uppercase drop-shadow">
+                    Processing
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Reveal glow at the sweep edge */}
+            {revealInProgress && (
+              <div
+                className="absolute top-0 bottom-0 w-8 pointer-events-none z-10"
+                style={{
+                  left: `${revealPosition}%`,
+                  transform: 'translateX(-50%)',
+                  background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.64), transparent)',
+                }}
+              />
+            )}
+
+            {/* Loading skeleton for history/direct open */}
+            {!isProcessing && !imageLoaded && image && !revealInProgress && (
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+                <div className="flex flex-col items-center gap-3">
+                  <Loader2 className="w-8 h-8 text-gray-400 animate-spin" />
+                  <span className="text-sm text-gray-500">Loading image...</span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -219,7 +345,8 @@ export default function ProcessedImageModal({ image, onClose, title = "Watermark
         <div className="flex gap-3 p-4 md:p-5 border-t border-gray-100 bg-white">
           <button
             onClick={handleDownload}
-            className="flex-1 flex items-center justify-center gap-2 py-3 md:py-3.5 px-4 md:px-6 bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-xl md:rounded-2xl text-sm md:text-base font-semibold hover:from-gray-800 hover:to-gray-700 active:scale-[0.98] transition-all shadow-lg shadow-gray-900/20 touch-manipulation cursor-pointer"
+            disabled={isProcessing || !image}
+            className="flex-1 flex items-center justify-center gap-2 py-3 md:py-3.5 px-4 md:px-6 bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-xl md:rounded-2xl text-sm md:text-base font-semibold hover:from-gray-800 hover:to-gray-700 active:scale-[0.98] transition-all shadow-lg shadow-gray-900/20 touch-manipulation cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
           >
             <Download className="w-5 h-5" />
             <span>Download</span>
@@ -227,8 +354,8 @@ export default function ProcessedImageModal({ image, onClose, title = "Watermark
 
           <button
             onClick={handleShare}
-            disabled={isSharing}
-            className="flex-1 flex items-center justify-center gap-2 py-3 md:py-3.5 px-4 md:px-6 rounded-xl md:rounded-2xl text-sm md:text-base font-semibold transition-all active:scale-[0.98] touch-manipulation bg-white text-gray-700 border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            disabled={isSharing || isProcessing || !image}
+            className="flex-1 flex items-center justify-center gap-2 py-3 md:py-3.5 px-4 md:px-6 rounded-xl md:rounded-2xl text-sm md:text-base font-semibold transition-all active:scale-[0.98] touch-manipulation bg-white text-gray-700 border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100 cursor-pointer"
           >
             {isSharing ? (
               <>

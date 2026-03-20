@@ -25,7 +25,16 @@ export default function DropZone() {
   const [error, setError] = useState<string | null>(null)
   const [processedImage, setProcessedImage] = useState<ProcessedImage | null>(null)
   const [showModal, setShowModal] = useState(false)
+  const [originalSrc, setOriginalSrc] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const originalSrcRef = useRef<string | null>(null)
+
+  const revokeOriginalSrc = useCallback(() => {
+    if (originalSrcRef.current) {
+      URL.revokeObjectURL(originalSrcRef.current)
+      originalSrcRef.current = null
+    }
+  }, [])
 
   const processImage = useCallback(async (file: File) => {
     if (!isValidImageType(file)) {
@@ -45,6 +54,14 @@ export default function DropZone() {
 
     setError(null)
     setIsProcessing(true)
+
+    // Create preview URL and open modal immediately
+    revokeOriginalSrc()
+    const previewUrl = URL.createObjectURL(file)
+    originalSrcRef.current = previewUrl
+    setOriginalSrc(previewUrl)
+    setProcessedImage(null)
+    setShowModal(true)
 
     try {
       const base64 = await fileToBase64(file)
@@ -66,13 +83,15 @@ export default function DropZone() {
       const newImage = await addToHistory(blob, file.name)
 
       setProcessedImage(newImage)
-      setShowModal(true)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to process image')
+      setShowModal(false)
+      revokeOriginalSrc()
+      setOriginalSrc(null)
     } finally {
       setIsProcessing(false)
     }
-  }, [remainingToday, addToHistory])
+  }, [remainingToday, addToHistory, revokeOriginalSrc])
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault()
@@ -126,6 +145,13 @@ export default function DropZone() {
     document.addEventListener('paste', handlePaste)
     return () => document.removeEventListener('paste', handlePaste)
   }, [processImage])
+
+  const handleModalClose = useCallback(() => {
+    revokeOriginalSrc()
+    setShowModal(false)
+    setProcessedImage(null)
+    setOriginalSrc(null)
+  }, [revokeOriginalSrc])
 
   const isDisabled = remainingToday <= 0
 
@@ -216,13 +242,12 @@ export default function DropZone() {
         </div>
       </div>
 
-      {showModal && processedImage && (
+      {showModal && (
         <ProcessedImageModal
           image={processedImage}
-          onClose={() => {
-            setShowModal(false)
-            setProcessedImage(null)
-          }}
+          isProcessing={isProcessing}
+          originalSrc={originalSrc ?? undefined}
+          onClose={handleModalClose}
         />
       )}
     </>

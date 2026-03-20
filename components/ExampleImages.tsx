@@ -28,6 +28,7 @@ export default function ExampleImages() {
   const [processingId, setProcessingId] = useState<number | null>(null)
   const [processedImage, setProcessedImage] = useState<ProcessedImage | null>(null)
   const [showModal, setShowModal] = useState(false)
+  const [modalOriginalSrc, setModalOriginalSrc] = useState<string | null>(null)
   const [validExamples, setValidExamples] = useState<typeof examples>([])
 
   useEffect(() => {
@@ -52,6 +53,9 @@ export default function ExampleImages() {
     if (remainingToday <= 0 || processingId !== null) return
 
     setProcessingId(example.id)
+    setProcessedImage(null)
+    setModalOriginalSrc(example.src)
+    setShowModal(true) // Open modal immediately
 
     try {
       const response = await fetch(example.src)
@@ -79,9 +83,9 @@ export default function ExampleImages() {
       const newImage = await addToHistory(processedBlob, example.src.split('/').pop() || 'example.jpg')
 
       setProcessedImage(newImage)
-      setShowModal(true)
     } catch (error) {
       console.error('Failed to process example:', error)
+      setShowModal(false)
     } finally {
       setProcessingId(null)
     }
@@ -123,12 +127,15 @@ export default function ExampleImages() {
         </div>
       </div>
 
-      {showModal && processedImage && (
+      {showModal && (
         <ProcessedImageModal
           image={processedImage}
+          isProcessing={processingId !== null}
+          originalSrc={modalOriginalSrc ?? undefined}
           onClose={() => {
             setShowModal(false)
             setProcessedImage(null)
+            setModalOriginalSrc(null)
           }}
         />
       )}
