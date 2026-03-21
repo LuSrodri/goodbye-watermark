@@ -370,24 +370,6 @@ export default function ProcessedImageModal({
             )}
           </button>
         </div>
-
-        {/* Cross-sell */}
-        <div className="px-4 pb-4 md:px-5 md:pb-5">
-          <a
-            href="https://ihatebackground.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 border border-gray-100 hover:bg-gray-100 hover:border-gray-200 transition-all group"
-          >
-            <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg shrink-0">
-              <Sparkles className="w-4 h-4 text-white" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-xs md:text-sm font-semibold text-gray-700 group-hover:text-gray-900 transition-colors">Also need to remove the background?</p>
-              <p className="text-xs md:text-sm text-gray-400 truncate">Try <span className="text-violet-600">ihatebackground.com</span> — free, private &amp; unlimited</p>
-            </div>
-          </a>
-        </div>
       </div>
     </div>
   )
