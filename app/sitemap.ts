@@ -45,6 +45,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     'remove-watermark-free-without-losing-quality',
     'remove-canva-watermark-free',
     'remove-watermark-without-blurring',
+    'remove-dreamstime-watermark-free',
   ]
 
   const blogPages: MetadataRoute.Sitemap = blogSlugs.map((slug) => ({

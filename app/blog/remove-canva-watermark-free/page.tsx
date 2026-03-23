@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import RelatedArticles from '@/components/RelatedArticles'
 
 export const metadata: Metadata = {
   title: 'How to Remove Canva Watermarks Free — Without Canva Pro',
@@ -265,6 +266,30 @@ export default function CanvaWatermarkArticle() {
           </section>
 
         </div>
+
+        <RelatedArticles articles={[
+          {
+            href: '/blog/remove-adobe-stock-watermark-free',
+            label: 'Stock Photos',
+            labelColor: 'bg-orange-100 text-orange-700',
+            title: 'Remove Adobe Stock preview watermarks free with AI',
+            readTime: '5 min read',
+          },
+          {
+            href: '/blog/remove-transparent-watermark-without-photoshop',
+            label: 'Tutorial',
+            labelColor: 'bg-green-100 text-green-700',
+            title: 'Remove transparent watermarks from images — without Photoshop',
+            readTime: '6 min read',
+          },
+          {
+            href: '/blog/remove-watermark-free-without-losing-quality',
+            label: 'Guide',
+            labelColor: 'bg-blue-100 text-blue-700',
+            title: 'Remove watermarks free without losing image quality',
+            readTime: '5 min read',
+          },
+        ]} />
 
         {/* Footer */}
         <div className="py-10 border-t border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

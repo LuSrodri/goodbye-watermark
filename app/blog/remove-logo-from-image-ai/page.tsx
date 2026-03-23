@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import RelatedArticles from '@/components/RelatedArticles'
 
 export const metadata: Metadata = {
   title: 'Remove Logos from Images Automatically with AI',
@@ -240,6 +241,30 @@ export default function RemoveLogoFromImageArticle() {
           </section>
 
         </div>
+
+        <RelatedArticles articles={[
+          {
+            href: '/blog/ai-watermark-remover-for-screenshots',
+            label: 'Tutorial',
+            labelColor: 'bg-green-100 text-green-700',
+            title: 'AI watermark remover for screenshots — no download needed',
+            readTime: '4 min read',
+          },
+          {
+            href: '/blog/remove-transparent-watermark-without-photoshop',
+            label: 'Tutorial',
+            labelColor: 'bg-green-100 text-green-700',
+            title: 'Remove transparent watermarks from images — without Photoshop',
+            readTime: '6 min read',
+          },
+          {
+            href: '/blog/remove-watermark-without-blurring',
+            label: 'Technical Guide',
+            labelColor: 'bg-cyan-100 text-cyan-700',
+            title: 'Remove watermarks without blurring the image — AI vs old methods',
+            readTime: '5 min read',
+          },
+        ]} />
 
         {/* Footer */}
         <div className="py-10 border-t border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

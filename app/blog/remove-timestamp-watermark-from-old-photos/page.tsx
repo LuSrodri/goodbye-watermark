@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import RelatedArticles from '@/components/RelatedArticles'
 
 export const metadata: Metadata = {
   title: 'Remove Timestamp Watermarks from Old Photos Online',
@@ -243,6 +244,30 @@ export default function TimestampWatermarkArticle() {
           </section>
 
         </div>
+
+        <RelatedArticles articles={[
+          {
+            href: '/blog/remove-watermark-from-graduation-photo',
+            label: 'Guide',
+            labelColor: 'bg-blue-100 text-blue-700',
+            title: 'Remove watermarks from graduation photos — free AI tool',
+            readTime: '5 min read',
+          },
+          {
+            href: '/blog/how-to-remove-watermark-from-jpeg-image-online',
+            label: 'Tutorial',
+            labelColor: 'bg-green-100 text-green-700',
+            title: 'How to remove watermarks from JPEG images online',
+            readTime: '5 min read',
+          },
+          {
+            href: '/blog/remove-watermark-without-blurring',
+            label: 'Technical Guide',
+            labelColor: 'bg-cyan-100 text-cyan-700',
+            title: 'Remove watermarks without blurring the image — AI vs old methods',
+            readTime: '5 min read',
+          },
+        ]} />
 
         {/* Footer */}
         <div className="py-10 border-t border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

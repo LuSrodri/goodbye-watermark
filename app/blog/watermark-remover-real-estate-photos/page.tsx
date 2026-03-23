@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import RelatedArticles from '@/components/RelatedArticles'
 
 export const metadata: Metadata = {
   title: 'Watermark Remover for Real Estate Listing Photos',
@@ -237,6 +238,30 @@ export default function RealEstateWatermarkArticle() {
           </section>
 
         </div>
+
+        <RelatedArticles articles={[
+          {
+            href: '/blog/remove-watermark-from-product-photo-ecommerce',
+            label: 'E-commerce Guide',
+            labelColor: 'bg-emerald-100 text-emerald-700',
+            title: 'Remove watermarks from product photos for e-commerce',
+            readTime: '6 min read',
+          },
+          {
+            href: '/blog/batch-watermark-remover-multiple-images-free',
+            label: 'Guide',
+            labelColor: 'bg-blue-100 text-blue-700',
+            title: 'Batch watermark remover — process multiple images free',
+            readTime: '5 min read',
+          },
+          {
+            href: '/blog/remove-watermark-free-without-losing-quality',
+            label: 'Guide',
+            labelColor: 'bg-blue-100 text-blue-700',
+            title: 'Remove watermarks free without losing image quality',
+            readTime: '5 min read',
+          },
+        ]} />
 
         {/* Footer */}
         <div className="py-10 border-t border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

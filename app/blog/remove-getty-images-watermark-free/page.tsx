@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import RelatedArticles from '@/components/RelatedArticles'
 
 export const metadata: Metadata = {
   title: 'Remove Getty Images Watermarks with AI — Free Online Tool',
@@ -207,6 +208,30 @@ export default function GettyWatermarkArticle() {
           </section>
 
         </div>
+
+        <RelatedArticles articles={[
+          {
+            href: '/blog/remove-shutterstock-watermark-free',
+            label: 'Stock Photos',
+            labelColor: 'bg-orange-100 text-orange-700',
+            title: 'Remove Shutterstock watermarks free — without paying',
+            readTime: '5 min read',
+          },
+          {
+            href: '/blog/how-to-remove-istock-watermark-online-free',
+            label: 'Stock Photos',
+            labelColor: 'bg-orange-100 text-orange-700',
+            title: 'How to remove iStock watermarks online free (2026)',
+            readTime: '5 min read',
+          },
+          {
+            href: '/blog/remove-dreamstime-watermark-free',
+            label: 'Stock Photos',
+            labelColor: 'bg-orange-100 text-orange-700',
+            title: 'Remove Dreamstime watermarks free — AI tool guide',
+            readTime: '5 min read',
+          },
+        ]} />
 
         {/* Footer */}
         <div className="py-10 border-t border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

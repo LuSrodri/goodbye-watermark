@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import RelatedArticles from '@/components/RelatedArticles'
 
 export const metadata: Metadata = {
   title: 'Batch Watermark Removal: Remove Watermarks from Multiple Images at Once',
@@ -282,6 +283,30 @@ export default function BatchWatermarkRemoverArticle() {
           </section>
 
         </div>
+
+        <RelatedArticles articles={[
+          {
+            href: '/blog/remove-watermark-from-product-photo-ecommerce',
+            label: 'E-commerce Guide',
+            labelColor: 'bg-emerald-100 text-emerald-700',
+            title: 'Remove watermarks from product photos for e-commerce',
+            readTime: '6 min read',
+          },
+          {
+            href: '/blog/watermark-remover-real-estate-photos',
+            label: 'Real Estate Guide',
+            labelColor: 'bg-teal-100 text-teal-700',
+            title: 'Watermark remover for real estate listing photos',
+            readTime: '6 min read',
+          },
+          {
+            href: '/blog/best-free-ai-watermark-remover-no-output-watermark',
+            label: 'Comparison',
+            labelColor: 'bg-indigo-100 text-indigo-700',
+            title: "Best free AI watermark removers that don't re-watermark your output",
+            readTime: '7 min read',
+          },
+        ]} />
 
         {/* Footer */}
         <div className="py-10 border-t border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

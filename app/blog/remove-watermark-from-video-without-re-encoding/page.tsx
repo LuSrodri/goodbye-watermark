@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import RelatedArticles from '@/components/RelatedArticles'
 
 export const metadata: Metadata = {
   title: 'Remove Watermarks from Video Without Re-Encoding: The Quality Dilemma',
@@ -262,6 +263,30 @@ export default function RemoveWatermarkFromVideoArticle() {
           </section>
 
         </div>
+
+        <RelatedArticles articles={[
+          {
+            href: '/blog/batch-watermark-remover-multiple-images-free',
+            label: 'Guide',
+            labelColor: 'bg-blue-100 text-blue-700',
+            title: 'Batch watermark remover — process multiple images free',
+            readTime: '5 min read',
+          },
+          {
+            href: '/blog/ai-watermark-remover-for-screenshots',
+            label: 'Tutorial',
+            labelColor: 'bg-green-100 text-green-700',
+            title: 'AI watermark remover for screenshots — no download needed',
+            readTime: '4 min read',
+          },
+          {
+            href: '/blog/remove-watermark-without-blurring',
+            label: 'Technical Guide',
+            labelColor: 'bg-cyan-100 text-cyan-700',
+            title: 'Remove watermarks without blurring the image — AI vs old methods',
+            readTime: '5 min read',
+          },
+        ]} />
 
         {/* Footer */}
         <div className="py-10 border-t border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

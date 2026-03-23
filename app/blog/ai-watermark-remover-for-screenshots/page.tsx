@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import RelatedArticles from '@/components/RelatedArticles'
 
 export const metadata: Metadata = {
   title: 'Remove Watermarks from Screenshots with AI — No Software Download',
@@ -236,6 +237,30 @@ export default function AIWatermarkRemoverForScreenshotsArticle() {
           </section>
 
         </div>
+
+        <RelatedArticles articles={[
+          {
+            href: '/blog/remove-logo-from-image-ai',
+            label: 'Tutorial',
+            labelColor: 'bg-green-100 text-green-700',
+            title: 'Remove logos from images automatically with AI',
+            readTime: '5 min read',
+          },
+          {
+            href: '/blog/remove-transparent-watermark-without-photoshop',
+            label: 'Tutorial',
+            labelColor: 'bg-green-100 text-green-700',
+            title: 'Remove transparent watermarks from images — without Photoshop',
+            readTime: '6 min read',
+          },
+          {
+            href: '/blog/remove-watermark-from-image-iphone-free',
+            label: 'Guide',
+            labelColor: 'bg-blue-100 text-blue-700',
+            title: 'How to remove watermarks from images on iPhone — free',
+            readTime: '4 min read',
+          },
+        ]} />
 
         {/* Footer */}
         <div className="py-10 border-t border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

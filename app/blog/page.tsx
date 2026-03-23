@@ -242,6 +242,15 @@ const articles = [
       'Cheap tools degrade resolution. AI-based inpainting preserves full HD quality while removing watermarks. Here\'s what to look for and why it matters.',
     readTime: '5 min read',
   },
+  {
+    href: '/blog/remove-dreamstime-watermark-free',
+    label: 'Stock Photos',
+    labelColor: 'bg-orange-100 text-orange-700',
+    title: 'Remove Dreamstime watermarks free — AI tool guide',
+    description:
+      'Dreamstime places a semi-transparent watermark on every preview image. Here\'s how their system works, what AI can realistically do, and when to just license the image.',
+    readTime: '5 min read',
+  },
 ]
 
 export default function BlogPage() {

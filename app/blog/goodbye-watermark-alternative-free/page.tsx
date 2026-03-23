@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import RelatedArticles from '@/components/RelatedArticles'
 
 export const metadata: Metadata = {
   title: 'Free Online Watermark Remover Alternatives — No Signup Required',
@@ -276,6 +277,30 @@ export default function GoodbyeWatermarkAlternativeArticle() {
           </section>
 
         </div>
+
+        <RelatedArticles articles={[
+          {
+            href: '/blog/best-free-ai-watermark-remover-no-output-watermark',
+            label: 'Comparison',
+            labelColor: 'bg-indigo-100 text-indigo-700',
+            title: "Best free AI watermark removers that don't re-watermark your output",
+            readTime: '7 min read',
+          },
+          {
+            href: '/blog/remove-watermark-without-blurring',
+            label: 'Technical Guide',
+            labelColor: 'bg-cyan-100 text-cyan-700',
+            title: 'Remove watermarks without blurring the image — AI vs old methods',
+            readTime: '5 min read',
+          },
+          {
+            href: '/blog/remove-watermark-free-without-losing-quality',
+            label: 'Guide',
+            labelColor: 'bg-blue-100 text-blue-700',
+            title: 'Remove watermarks free without losing image quality',
+            readTime: '5 min read',
+          },
+        ]} />
 
         {/* Footer */}
         <div className="py-10 border-t border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
