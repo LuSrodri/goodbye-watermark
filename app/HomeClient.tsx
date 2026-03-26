@@ -16,17 +16,28 @@ interface Props {
 
 function FooterCredit() {
   return (
-    <p className="text-xs text-gray-400 text-center">
-      Feito com ❤️ por{' '}
-      <a
-        href="https://lusrodri.me"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-gray-500 hover:text-gray-700 hover:underline transition-colors"
-      >
-        Lucas Santos Rodrigues
-      </a>
-    </p>
+    <div className="flex flex-col items-center gap-1.5">
+      <p className="text-xs text-gray-400 text-center">
+        Feito com ❤️ por{' '}
+        <a
+          href="https://lusrodri.me"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-gray-500 hover:text-gray-700 hover:underline transition-colors"
+        >
+          Lucas Santos Rodrigues
+        </a>
+      </p>
+      <p className="text-xs text-gray-400 text-center">
+        Looking for help? Get in contact:{' '}
+        <a
+          href="mailto:rodrigueslucass@outlook.com.br"
+          className="text-gray-500 hover:text-gray-700 hover:underline transition-colors"
+        >
+          rodrigueslucass@outlook.com.br
+        </a>
+      </p>
+    </div>
   )
 }
 
