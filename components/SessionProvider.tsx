@@ -1,19 +1,38 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState, ReactNode, useCallback, useRef } from 'react'
+import { createContext, useContext, useEffect, useState, ReactNode, useCallback, useRef, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { ProcessedImage } from '@/lib/types'
-import { getAllImages, resetDailyCountIfNewDay, saveImage, incrementDailyCount, StoredImage } from '@/lib/db'
+import {
+  getAllImages,
+  resetDailyCountIfNewDay,
+  saveImage,
+  incrementDailyCount,
+  StoredImage,
+  addPaidCredits as dbAddPaidCredits,
+  consumePaidCredit as dbConsumePaidCredit,
+  savePendingPayment as dbSavePendingPayment,
+  deletePendingPayment as dbDeletePendingPayment,
+  getAllPendingPayments,
+} from '@/lib/db'
 import { v4 as uuidv4 } from 'uuid'
 
 const DAILY_LIMIT = 5
 
 interface SessionContextType {
   remainingToday: number
+  paidCredits: number
   history: ProcessedImage[]
   isLoading: boolean
   refreshSession: () => Promise<void>
-  addToHistory: (blob: Blob, originalName: string) => Promise<ProcessedImage>
+  addToHistory: (blob: Blob, originalName: string, paid?: boolean) => Promise<ProcessedImage>
   updateRemaining: (count: number) => void
+  addPaidCredits: (count: number) => Promise<void>
+  consumePaidCredit: () => Promise<void>
+  savePendingPayment: (sessionId: string, credits: number) => Promise<void>
+  showPaywall: boolean
+  openPaywall: () => void
+  closePaywall: () => void
 }
 
 const SessionContext = createContext<SessionContextType | null>(null)
@@ -35,10 +54,73 @@ function storedToProcessed(stored: StoredImage): ProcessedImage {
   }
 }
 
+// Handles both: redirect-back flow (?payment_success) and pending recovery on mount
+function PaymentHandler({ onCreditsAdded }: { onCreditsAdded: (count: number) => void }) {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const handledRef = useRef<Set<string>>(new Set())
+
+  const verifyAndCredit = useCallback(async (sessionId: string): Promise<'credited' | 'open' | 'done'> => {
+    const res = await fetch(`/api/verify-payment?session_id=${sessionId}`)
+    const data = await res.json()
+
+    if (data.success && data.credits > 0) {
+      onCreditsAdded(data.credits)
+      await dbDeletePendingPayment(sessionId)
+      return 'credited'
+    }
+
+    if (data.alreadyClaimed) {
+      await dbDeletePendingPayment(sessionId)
+      return 'done'
+    }
+
+    // Session expired or not found — clean up
+    if (data.paymentStatus === 'expired' || data.paymentStatus === 'not_found') {
+      await dbDeletePendingPayment(sessionId)
+      return 'done'
+    }
+
+    // Still open (user might be on checkout) — keep pending
+    return 'open'
+  }, [onCreditsAdded])
+
+  // Handle redirect-back from Stripe success URL
+  useEffect(() => {
+    const paymentSuccess = searchParams.get('payment_success')
+    const sessionId = searchParams.get('session_id')
+    if (!paymentSuccess || !sessionId || handledRef.current.has(sessionId)) return
+
+    handledRef.current.add(sessionId)
+    verifyAndCredit(sessionId).catch(console.error).finally(() => {
+      const url = new URL(window.location.href)
+      url.searchParams.delete('payment_success')
+      url.searchParams.delete('session_id')
+      router.replace(url.pathname + (url.search || ''))
+    })
+  }, [searchParams, router, verifyAndCredit])
+
+  // Recover credits from any pending payments on mount (survives browser close)
+  useEffect(() => {
+    getAllPendingPayments().then(pending => {
+      pending.forEach(payment => {
+        if (handledRef.current.has(payment.sessionId)) return
+        handledRef.current.add(payment.sessionId)
+        verifyAndCredit(payment.sessionId).catch(console.error)
+      })
+    }).catch(console.error)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  return null
+}
+
 export function SessionProvider({ children }: { children: ReactNode }) {
   const [remainingToday, setRemainingToday] = useState(DAILY_LIMIT)
+  const [paidCredits, setPaidCredits] = useState(0)
   const [history, setHistory] = useState<ProcessedImage[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [showPaywall, setShowPaywall] = useState(false)
   const objectUrlsRef = useRef<string[]>([])
 
   const revokeUrls = useCallback(() => {
@@ -49,17 +131,15 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const refreshSession = useCallback(async () => {
     try {
       revokeUrls()
-
       const [images, session] = await Promise.all([
         getAllImages(),
         resetDailyCountIfNewDay(),
       ])
-
       const processed = images.map(storedToProcessed)
       objectUrlsRef.current = processed.map(p => p.processed_url)
-
       setHistory(processed)
       setRemainingToday(DAILY_LIMIT - session.dailyCount)
+      setPaidCredits(session.paidCredits ?? 0)
     } catch (error) {
       console.error('Failed to load session from IndexedDB:', error)
     } finally {
@@ -72,10 +152,15 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     return revokeUrls
   }, [refreshSession, revokeUrls])
 
-  const addToHistory = useCallback(async (blob: Blob, originalName: string): Promise<ProcessedImage> => {
+  const addToHistory = useCallback(async (blob: Blob, originalName: string, paid = false): Promise<ProcessedImage> => {
     const id = uuidv4()
     await saveImage(id, blob, originalName)
-    const session = await incrementDailyCount()
+
+    // Only burn daily credits when not using a paid credit
+    if (!paid) {
+      const session = await incrementDailyCount()
+      setRemainingToday(DAILY_LIMIT - session.dailyCount)
+    }
 
     const objectUrl = URL.createObjectURL(blob)
     objectUrlsRef.current.push(objectUrl)
@@ -88,26 +173,55 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     }
 
     setHistory(prev => [image, ...prev])
-    setRemainingToday(DAILY_LIMIT - session.dailyCount)
-
     return image
+  }, [])
+
+  const addPaidCreditsHandler = useCallback(async (count: number) => {
+    const session = await dbAddPaidCredits(count)
+    setPaidCredits(session.paidCredits)
+  }, [])
+
+  const consumePaidCreditHandler = useCallback(async () => {
+    const session = await dbConsumePaidCredit()
+    setPaidCredits(session.paidCredits)
+  }, [])
+
+  const savePendingPaymentHandler = useCallback(async (sessionId: string, credits: number) => {
+    await dbSavePendingPayment(sessionId, credits)
   }, [])
 
   const updateRemaining = useCallback((count: number) => {
     setRemainingToday(count)
   }, [])
 
+  const openPaywall = useCallback(() => setShowPaywall(true), [])
+  const closePaywall = useCallback(() => setShowPaywall(false), [])
+
+  const handleCreditsAdded = useCallback(async (count: number) => {
+    await addPaidCreditsHandler(count)
+  }, [addPaidCreditsHandler])
+
   return (
     <SessionContext.Provider
       value={{
         remainingToday,
+        paidCredits,
         history,
         isLoading,
         refreshSession,
         addToHistory,
         updateRemaining,
+        addPaidCredits: addPaidCreditsHandler,
+        consumePaidCredit: consumePaidCreditHandler,
+        savePendingPayment: savePendingPaymentHandler,
+        showPaywall,
+        openPaywall,
+        closePaywall,
       }}
     >
+      <Suspense fallback={null}>
+        <PaymentHandler onCreditsAdded={handleCreditsAdded} />
+      </Suspense>
       {children}
     </SessionContext.Provider>
   )
