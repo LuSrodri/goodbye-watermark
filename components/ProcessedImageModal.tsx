@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { X, Download, Share2, Loader2, Sparkles, Coffee } from 'lucide-react'
+import { X, Download, Share2, Loader2, Sparkles } from 'lucide-react'
 import { ProcessedImage } from '@/lib/types'
 import { getImageBlob } from '@/lib/db'
 
@@ -369,17 +369,6 @@ export default function ProcessedImageModal({
                 <span className="hidden sm:inline">Share</span>
               </>
             )}
-          </button>
-
-          <button
-            onClick={() => window.open('https://www.buymeacoffee.com/lusrodri', '_blank', 'noopener,noreferrer')}
-            disabled={isProcessing || !image}
-            className="flex-1 flex items-center justify-center gap-2 py-3 md:py-3.5 px-4 md:px-6 rounded-xl md:rounded-2xl text-sm md:text-base font-semibold transition-all active:scale-[0.98] touch-manipulation border-2 border-black disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100 cursor-pointer"
-            style={{ backgroundColor: '#FFDD00', color: '#000000', borderColor: '#000000' }}
-          >
-            <Coffee className="w-5 h-5" />
-            <span className="hidden sm:inline">Buy me a coffee</span>
-            <span className="inline sm:hidden">Donate</span>
           </button>
         </div>
       </div>
