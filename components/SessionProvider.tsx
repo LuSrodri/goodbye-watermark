@@ -17,7 +17,7 @@ import {
 } from '@/lib/db'
 import { v4 as uuidv4 } from 'uuid'
 
-const DAILY_LIMIT = 5
+const DAILY_LIMIT = 3
 
 interface SessionContextType {
   remainingToday: number
