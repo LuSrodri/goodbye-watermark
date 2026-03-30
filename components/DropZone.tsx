@@ -271,13 +271,14 @@ export default function DropZone() {
               <AlertCircle className="w-10 h-10 sm:w-12 sm:h-12" />
               <p className="font-medium text-sm sm:text-base">All credits used</p>
               <p className="text-xs sm:text-sm text-center">
-                Wating for credits to refresh, or{' '}
+                Out of credits.{' '}
                 <button
                   onClick={e => { e.stopPropagation(); openPaywall() }}
                   className="text-gray-600 underline underline-offset-2 hover:text-gray-900 transition-colors cursor-pointer"
                 >
-                  get more credits
+                  Get more to continue
                 </button>
+                .
               </p>
             </div>
           ) : hasPaidCredits ? (
