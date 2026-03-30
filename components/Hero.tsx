@@ -14,9 +14,9 @@ export default function Hero({ sloganData }: Props) {
   const { openPaywall, paidCredits } = useSession()
 
   return (
-    <div className="flex flex-col items-stretch lg:items-start">
+    <div className="flex flex-col items-stretch lg:items-start justify-center h-full">
         {/* Running man before/after — auto-animates on load, then interactive */}
-        <div className="relative mb-6 sm:mb-8 self-center w-[60%]">
+        <div className="relative mb-6 sm:mb-8 self-center w-[56%]">
           <BeforeAfterSlider
             beforeSrc="/before-after/running-man-witht-watermark-fotop.png"
             afterSrc="/before-after/running-man-without-watermark-fotop.png"
@@ -30,7 +30,7 @@ export default function Hero({ sloganData }: Props) {
           </div>
         </div>
 
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 tracking-tight text-center lg:text-left font-heading">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 tracking-tight text-center lg:text-left font-heading">
           {sloganData.slogan}
         </h1>
         <p className="mt-3 sm:mt-4 text-base sm:text-lg text-gray-600 text-center lg:text-left px-4 sm:px-0">

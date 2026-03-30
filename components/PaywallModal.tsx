@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { X, Layers, Infinity, Zap, Check } from 'lucide-react'
+import { X, Layers, Infinity, Zap, Check, TimerOff } from 'lucide-react'
 import { useSession } from './SessionProvider'
 
 interface Props {
@@ -35,14 +35,19 @@ const BENEFITS = [
   },
   {
     icon: Infinity,
-    title: 'No Daily Waiting',
-    desc: 'Use your credits whenever you need, no reset timer.',
+    title: 'No Waiting',
+    desc: "Got a batch to clean? Don't stop now.",
   },
   {
     icon: Zap,
     title: 'Best Price Around',
     desc: 'Cheaper per image than any comparable service.',
   },
+  {
+    icon: TimerOff,
+    title: 'Credits to all you Need',
+    desc: 'One pack, use whenever. No subscriptions.',
+  }
 ]
 
 const PACKAGE_CREDITS: Record<string, number> = {
@@ -54,7 +59,7 @@ export default function PaywallModal({ onClose }: Props) {
   const { savePendingPayment } = useSession()
   const [isVisible, setIsVisible] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
-  const [selectedPackage, setSelectedPackage] = useState('50credits')
+  const [selectedPackage, setSelectedPackage] = useState('10credits')
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
@@ -101,17 +106,15 @@ export default function PaywallModal({ onClose }: Props) {
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-300 ${
-        isVisible && !isClosing ? 'bg-black/60 backdrop-blur-sm' : 'bg-transparent backdrop-blur-none'
-      }`}
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-300 ${isVisible && !isClosing ? 'bg-black/60 backdrop-blur-sm' : 'bg-transparent backdrop-blur-none'}`}
       onClick={handleClose}
     >
       <div
-        className={`relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 ease-out ${
-          isVisible && !isClosing
+        className={`relative w-full max-w-md bg-white rounded-2xl shadow-2xl transition-all duration-300 ease-out ${isVisible && !isClosing
             ? 'opacity-100 scale-100 translate-y-0'
             : 'opacity-0 scale-95 translate-y-4'
-        }`}
+          }
+          max-h-[90dvh] overflow-x-auto`}
         onClick={e => e.stopPropagation()}
       >
         {/* Close button */}
@@ -155,11 +158,10 @@ export default function PaywallModal({ onClose }: Props) {
               <button
                 key={pkg.id}
                 onClick={() => setSelectedPackage(pkg.id)}
-                className={`relative flex flex-col items-start p-4 rounded-xl border-2 text-left transition-all cursor-pointer ${
-                  selectedPackage === pkg.id
+                className={`relative flex flex-col items-start p-4 rounded-xl border-2 text-left transition-all cursor-pointer ${selectedPackage === pkg.id
                     ? 'border-gray-900 bg-gray-50 shadow-sm'
                     : 'border-gray-200 bg-white hover:border-gray-300'
-                }`}
+                  }`}
               >
                 {pkg.best && (
                   <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 text-[10px] font-bold tracking-wide uppercase px-2.5 py-0.5 rounded-full bg-gradient-to-r from-emerald-400 to-teal-500 text-white whitespace-nowrap">
@@ -167,7 +169,7 @@ export default function PaywallModal({ onClose }: Props) {
                   </span>
                 )}
                 <span className="text-2xl font-bold text-gray-900 font-heading">{pkg.price}</span>
-                <span className="text-sm font-semibold text-gray-700 mt-0.5">{pkg.credits} credits</span>
+                <span className="text-sm font-semibold text-gray-700 mt-0.5">{pkg.credits} credit(s)</span>
                 <span className="text-xs text-gray-400 mt-1">{pkg.priceNote}</span>
 
                 {selectedPackage === pkg.id && (

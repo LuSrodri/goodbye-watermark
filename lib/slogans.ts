@@ -10,8 +10,8 @@ export interface SloganData {
 export const defaultSlogan: SloganData = {
   slug: '',
   title: 'Goodbye Watermark',
-  slogan: 'Remove watermarks instantly',
-  subslogan: 'Free AI-powered watermark removal. No signup required.',
+  slogan: 'Remove watermarks. Now.',
+  subslogan: '3 free removals. No signup. Results in seconds.',
   metaTitle: 'Goodbye Watermark - Free AI Watermark Remover',
   metaDescription: 'Remove watermarks from images instantly with AI. Free, no signup required. Supports JPG, PNG, and WebP formats.'
 }

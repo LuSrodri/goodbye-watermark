@@ -269,9 +269,9 @@ export default function DropZone() {
           ) : isDisabled ? (
             <div className="flex flex-col items-center gap-3 sm:gap-4 text-gray-400 px-4">
               <AlertCircle className="w-10 h-10 sm:w-12 sm:h-12" />
-              <p className="font-medium text-sm sm:text-base">Daily limit reached</p>
+              <p className="font-medium text-sm sm:text-base">All credits used</p>
               <p className="text-xs sm:text-sm text-center">
-                Come back tomorrow, or{' '}
+                Wating for credits to refresh, or{' '}
                 <button
                   onClick={e => { e.stopPropagation(); openPaywall() }}
                   className="text-gray-600 underline underline-offset-2 hover:text-gray-900 transition-colors cursor-pointer"
@@ -341,13 +341,13 @@ export default function DropZone() {
           ) : (
             <div className="flex items-center gap-2 text-gray-500">
               <div className={`w-2 h-2 rounded-full ${remainingToday > 0 ? 'bg-green-500' : 'bg-red-500'}`} />
-              <span>{remainingToday} credits to use today</span>
+              <span>{remainingToday} credits to use now</span>
             </div>
           )}
           {!hasPaidCredits && remainingToday > 0 && (
             <div className="flex items-center gap-1 text-gray-400">
               <Check className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span>Free, no signup, credit refresh daily</span>
+              <span>Freemium, no signup</span>
             </div>
           )}
         </div>
