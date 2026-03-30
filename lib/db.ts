@@ -134,8 +134,11 @@ async function putSession(data: SessionData): Promise<void> {
 export async function resetDailyCountIfNewDay(): Promise<SessionData> {
   const session = await getSession()
   const today = getTodayDate()
+  const lastReset = new Date(session.lastResetDate)
+  const now = new Date(today)
+  const diffDays = Math.floor((now.getTime() - lastReset.getTime()) / (1000 * 60 * 60 * 24))
 
-  if (session.lastResetDate !== today) {
+  if (diffDays >= 15) {
     const updated: SessionData = { ...session, dailyCount: 0, lastResetDate: today }
     await putSession(updated)
     return updated
