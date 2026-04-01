@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback, useRef, useEffect } from 'react'
+import { track } from '@vercel/analytics'
 import { Upload, ImageIcon, Loader2, Check, AlertCircle, Gem, Layers } from 'lucide-react'
 import { useSession } from './SessionProvider'
 import { fileToBase64, isValidImageType, MAX_FILE_SIZE } from '@/lib/utils'
@@ -55,6 +56,7 @@ export default function DropZone() {
       return
     }
     if (isDisabled) {
+      track('free_limit_reached')
       openPaywall()
       return
     }
@@ -87,6 +89,7 @@ export default function DropZone() {
       }
 
       const newImage = await addToHistory(blob, file.name, hasPaidCredits)
+      track('image_processed', { credit_type: hasPaidCredits ? 'paid' : 'free' })
       setProcessedImage(newImage)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to process image')
@@ -136,6 +139,7 @@ export default function DropZone() {
         const blob = base64ToBlob(result.data.processedBase64)
         await consumePaidCredit()
         const newImage = await addToHistory(blob, items[i].file.name, true)
+        track('image_processed', { credit_type: 'paid' })
 
         setBatchItems(prev => {
           const next = [...prev]

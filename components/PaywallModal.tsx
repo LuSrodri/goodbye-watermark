@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { track } from '@vercel/analytics'
 import { X, Layers, Infinity, Zap, Check, TimerOff } from 'lucide-react'
 import { useSession } from './SessionProvider'
 
@@ -94,6 +95,7 @@ export default function PaywallModal({ onClose }: Props) {
       if (data.url && data.sessionId) {
         // Persist session ID before leaving — credits survive if browser closes mid-checkout
         await savePendingPayment(data.sessionId, PACKAGE_CREDITS[selectedPackage] ?? 0)
+        track('checkout_initiated', { package: selectedPackage, credits: PACKAGE_CREDITS[selectedPackage] ?? 0 })
         window.location.href = data.url
         return
       }
