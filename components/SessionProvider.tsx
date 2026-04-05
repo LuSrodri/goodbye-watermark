@@ -1,6 +1,7 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState, ReactNode, useCallback, useRef, Suspense } from 'react'
+import confetti from 'canvas-confetti'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ProcessedImage } from '@/lib/types'
 import {
@@ -199,6 +200,14 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
   const handleCreditsAdded = useCallback(async (count: number) => {
     await addPaidCreditsHandler(count)
+    // Celebrate payment confirmation with confetti
+    const end = Date.now() + 3000
+    const frame = () => {
+      confetti({ particleCount: 6, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#10b981', '#3b82f6', '#f59e0b'] })
+      confetti({ particleCount: 6, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#10b981', '#3b82f6', '#f59e0b'] })
+      if (Date.now() < end) requestAnimationFrame(frame)
+    }
+    frame()
   }, [addPaidCreditsHandler])
 
   return (

@@ -344,9 +344,33 @@ export default function DropZone() {
               </div>
             </div>
           ) : (
-            <div className="flex items-center gap-2 text-gray-500">
-              <div className={`w-2 h-2 rounded-full ${remainingToday > 0 ? 'bg-green-500' : 'bg-red-500'}`} />
-              <span>{remainingToday} credits to use now</span>
+            <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border ${
+              remainingToday === 0
+                ? 'bg-red-50 border-red-200'
+                : remainingToday === 1
+                  ? 'bg-amber-50 border-amber-200'
+                  : 'bg-gray-50 border-gray-200'
+            }`}>
+              <div className={`w-2 h-2 rounded-full ${
+                remainingToday === 0
+                  ? 'bg-red-500'
+                  : remainingToday === 1
+                    ? 'bg-amber-500'
+                    : 'bg-green-500'
+              }`} />
+              <span className={`text-xs font-medium ${
+                remainingToday === 0
+                  ? 'text-red-600'
+                  : remainingToday === 1
+                    ? 'text-amber-700'
+                    : 'text-gray-600'
+              }`}>
+                {remainingToday === 0
+                  ? 'No credits left'
+                  : remainingToday === 1
+                    ? 'Last free credit'
+                    : `${remainingToday} free credits`}
+              </span>
             </div>
           )}
           {!hasPaidCredits && remainingToday > 0 && (

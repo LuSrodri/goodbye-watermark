@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { track } from '@vercel/analytics'
 import { X, Layers, Infinity, Zap, Check, TimerOff } from 'lucide-react'
+import Image from 'next/image'
 import { useSession } from './SessionProvider'
 
 interface Props {
@@ -57,7 +58,8 @@ const PACKAGE_CREDITS: Record<string, number> = {
 }
 
 export default function PaywallModal({ onClose }: Props) {
-  const { savePendingPayment } = useSession()
+  const { savePendingPayment, history } = useSession()
+  const mosaicImages = history.slice(0, 6)
   const [isVisible, setIsVisible] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
   const [selectedPackage, setSelectedPackage] = useState('10credits')
@@ -138,6 +140,32 @@ export default function PaywallModal({ onClose }: Props) {
               Your free credits are used up. Pick a pack to keep going.
             </p>
           </div>
+
+          {/* User's processed images mosaic */}
+          {mosaicImages.length > 0 && (
+            <div className="mb-6">
+              <p className="text-xs text-gray-400 mb-2">Images you&apos;ve already cleaned</p>
+              <div className="grid grid-cols-3 gap-1.5">
+                {mosaicImages.map((img) => (
+                  <div key={img.id} className="relative aspect-square rounded-lg overflow-hidden bg-gray-100">
+                    <Image
+                      src={img.processed_url}
+                      alt=""
+                      fill
+                      className="object-cover"
+                      sizes="80px"
+                      unoptimized
+                    />
+                  </div>
+                ))}
+                {mosaicImages.length < 6 && (
+                  <div className="aspect-square rounded-lg border-2 border-dashed border-gray-200 flex items-center justify-center">
+                    <span className="text-gray-300 text-xl">+</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Benefits */}
           <ul className="space-y-3 mb-7">
