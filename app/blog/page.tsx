@@ -36,6 +36,42 @@ const categories = [
 
 const articles = [
   {
+    href: '/blog/goodbye-watermark-vs-monica-im',
+    label: 'Comparison',
+    labelColor: 'bg-indigo-100 text-indigo-700',
+    title: 'Goodbye Watermark vs Monica.im — which is better for removing watermarks?',
+    description:
+      'Monica.im is an all-in-one AI assistant. Goodbye Watermark does one thing. Pricing, file size limits, signup requirements, and batch support compared.',
+    readTime: '6 min read',
+  },
+  {
+    href: '/blog/goodbye-watermark-vs-watermarkremover',
+    label: 'Comparison',
+    labelColor: 'bg-indigo-100 text-indigo-700',
+    title: 'Goodbye Watermark vs WatermarkRemover.io — honest comparison 2026',
+    description:
+      'WatermarkRemover.io gives 3 total free credits. Goodbye Watermark gives 3 per day with no signup. Full breakdown of pricing, API, and batch support.',
+    readTime: '6 min read',
+  },
+  {
+    href: '/blog/goodbye-watermark-vs-dewatermark',
+    label: 'Comparison',
+    labelColor: 'bg-indigo-100 text-indigo-700',
+    title: 'Goodbye Watermark vs DeWatermark.ai — pricing and features compared',
+    description:
+      'DeWatermark supports video, PDF, and images with a manual brush tool. Goodbye Watermark is simpler with no account, no ads, and no subscriptions. Which fits your workflow?',
+    readTime: '6 min read',
+  },
+  {
+    href: '/blog/goodbye-watermark-vs-ezremove',
+    label: 'Comparison',
+    labelColor: 'bg-indigo-100 text-indigo-700',
+    title: 'Goodbye Watermark vs EzRemove.ai — features and free tier compared',
+    description:
+      'EzRemove gives 50 free credits per day and cheaper one-time pricing. Goodbye Watermark has batch processing. An honest look at both tools.',
+    readTime: '6 min read',
+  },
+  {
     href: '/blog/how-to-detect-and-remove-invisible-ai-watermarks',
     label: 'AI & Watermarks',
     labelColor: 'bg-violet-100 text-violet-700',
