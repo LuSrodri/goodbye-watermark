@@ -195,7 +195,9 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     setRemainingToday(count)
   }, [])
 
-  const openPaywall = useCallback(() => setShowPaywall(true), [])
+  // Paywall temporarily disabled while a Stripe issue is being resolved.
+  // To restore: change body back to `setShowPaywall(true)`.
+  const openPaywall = useCallback(() => { /* setShowPaywall(true) */ }, [])
   const closePaywall = useCallback(() => setShowPaywall(false), [])
 
   const handleCreditsAdded = useCallback(async (count: number) => {

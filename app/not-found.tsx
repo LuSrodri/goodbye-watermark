@@ -6,7 +6,7 @@ export default function NotFound() {
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
       <Image
-        src="/goodbyewatermark.com-logo-hero.png"
+        src="/goodbye-watermark-logo.png"
         alt="Goodbye Watermark"
         width={120}
         height={120}

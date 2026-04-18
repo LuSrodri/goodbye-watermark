@@ -39,8 +39,8 @@ export const metadata: Metadata = {
   },
   description: 'Remove watermarks from images instantly with AI. Free, no signup required. Supports JPG, PNG, and WebP formats.',
   icons: {
-    icon: '/goodbyewatermark.com-logo-favicon.png',
-    apple: '/goodbyewatermark.com-logo-favicon.png'
+    icon: '/goodbye-watermark-logo.png',
+    apple: '/goodbye-watermark-logo.png'
   },
   manifest: '/manifest.json'
 }
@@ -53,9 +53,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/goodbyewatermark.com-logo-favicon.png" sizes="any" />
-        <link rel="icon" href="/goodbyewatermark.com-logo-favicon.png" type="image/png" />
-        <link rel="apple-touch-icon" href="/goodbyewatermark.com-logo-favicon.png" />
+        <link rel="icon" href="/goodbye-watermark-logo.png" sizes="any" />
+        <link rel="icon" href="/goodbye-watermark-logo.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/goodbye-watermark-logo.png" />
       </head>
       <body className={`${spaceGrotesk.variable} ${sentient.variable} font-sans antialiased`}>
         {children}

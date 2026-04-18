@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: 'https://goodbyewatermark.com/goodbyewatermark.com-logo-favicon.png',
+        url: 'https://goodbyewatermark.com/goodbye-watermark-logo.png',
         width: 1200,
         height: 630,
         alt: 'Goodbye Watermark - Free AI Watermark Remover'
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: defaultSlogan.metaTitle,
     description: defaultSlogan.metaDescription,
-    images: ['https://goodbyewatermark.com/goodbyewatermark.com-logo-favicon.png']
+    images: ['https://goodbyewatermark.com/goodbye-watermark-logo.png']
   },
   robots: {
     index: true,

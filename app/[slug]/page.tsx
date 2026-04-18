@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: 'website',
       images: [
         {
-          url: `${siteUrl}/goodbyewatermark.com-logo-favicon.png`,
+          url: `${siteUrl}/goodbye-watermark-logo.png`,
           width: 1200,
           height: 630,
           alt: sloganData.metaTitle
@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: 'summary_large_image',
       title: sloganData.metaTitle,
       description: sloganData.metaDescription,
-      images: [`${siteUrl}/goodbyewatermark.com-logo-favicon.png`]
+      images: [`${siteUrl}/goodbye-watermark-logo.png`]
     },
     alternates: {
       canonical: `${siteUrl}/${slug}`
