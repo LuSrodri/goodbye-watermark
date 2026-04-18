@@ -317,9 +317,9 @@ export default function ApiLandingPage() {
             <p className="font-semibold mb-1">Authentication</p>
             <p>
               Requests must come through the RapidAPI gateway. The <code className="text-xs bg-amber-100 px-1.5 py-0.5 rounded">x-rapidapi-key</code>
-              {' '}you send identifies your subscription, and RapidAPI forwards a static
-              {' '}<code className="text-xs bg-amber-100 px-1.5 py-0.5 rounded">Authorization</code> secret to our origin to prove the call is authentic.
-              Calling the origin directly without the right secret returns <code>401</code>.
+              {' '}you send identifies your subscription, and RapidAPI injects an
+              {' '}<code className="text-xs bg-amber-100 px-1.5 py-0.5 rounded">X-RapidAPI-Proxy-Secret</code> header into the request before
+              forwarding it to our origin. Calling the origin directly without that secret returns <code>401</code>.
             </p>
           </div>
 

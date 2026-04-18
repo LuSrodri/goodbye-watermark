@@ -36,11 +36,11 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  // RapidAPI gateway forwards the static value configured in the provider
-  // dashboard. Tolerate an optional `Bearer ` prefix so callers hitting the
-  // origin directly with the same secret keep working.
-  const auth = request.headers.get('authorization') ?? ''
-  const presented = auth.replace(/^Bearer\s+/i, '').trim()
+  // The Rapid Runtime appends X-RapidAPI-Proxy-Secret to every request it
+  // forwards to the origin (value visible under Hub Listing > Gateway >
+  // Firewall Settings). If the header is missing or mismatches, the request
+  // didn't come through the gateway.
+  const presented = request.headers.get('x-rapidapi-proxy-secret') ?? ''
   if (presented !== expected) {
     return unauthorized('Invalid or missing API key')
   }
@@ -91,7 +91,7 @@ export async function GET() {
         process: 'POST /api/v1/remove-watermark',
         health: 'GET /api/v1/ping',
       },
-      authentication: 'Authorization header (provisioned via RapidAPI)',
+      authentication: 'X-RapidAPI-Proxy-Secret header (injected by RapidAPI gateway)',
       input: { image: 'base64 string OR https URL' },
       output: { success: 'boolean', image: 'data:image/png;base64,...', format: 'png' },
       docs: '/api-watermark-remover',
