@@ -196,7 +196,7 @@ export default function ApiLandingPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
             <a
-              href="https://rapidapi.com/"
+              href="https://rapidapi.com/LuSrodri/api/goodbye-watermark-api"
               target="_blank"
               rel="noopener"
               className="inline-flex items-center justify-center gap-2 bg-gray-900 text-white text-sm font-semibold px-6 py-3 rounded-full hover:bg-gray-800 transition-colors"
@@ -388,7 +388,7 @@ export default function ApiLandingPage() {
             Subscribe on RapidAPI, copy your key, and you are live in under five minutes.
           </p>
           <a
-            href="https://rapidapi.com/"
+            href="https://rapidapi.com/LuSrodri/api/goodbye-watermark-api"
             target="_blank"
             rel="noopener"
             className="inline-flex items-center justify-center gap-2 bg-white text-gray-900 text-sm font-semibold px-6 py-3 rounded-full hover:bg-gray-100 transition-colors"
