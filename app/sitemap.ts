@@ -17,11 +17,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.95
+    },
+    {
+      url: `${siteUrl}/api-watermark-remover`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.95
     }
   ]
 
   // Blog pages
   const blogSlugs = [
+    'watermark-removal-api',
     'how-to-detect-and-remove-invisible-ai-watermarks',
     'remove-watermark-from-pdf-online-free',
     'ai-watermark-remover-for-screenshots',

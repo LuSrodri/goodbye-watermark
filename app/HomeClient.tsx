@@ -6,6 +6,7 @@ import DropZone from '@/components/DropZone'
 import ExampleImages from '@/components/ExampleImages'
 import ImageHistory from '@/components/ImageHistory'
 import WatermarkSections from '@/components/WatermarkSections'
+import ApiSection from '@/components/ApiSection'
 import BlogSection from '@/components/BlogSection'
 import PaywallModal from '@/components/PaywallModal'
 import { SloganData } from '@/lib/slogans'
@@ -67,6 +68,9 @@ function PageContent({ sloganData }: Props) {
 
         {/* ── Platform before/after sections ── */}
         <WatermarkSections />
+
+        {/* ── Developer API ── */}
+        <ApiSection />
 
         {/* ── Blog ── */}
         <BlogSection />

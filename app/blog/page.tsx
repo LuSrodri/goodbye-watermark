@@ -32,9 +32,19 @@ const categories = [
   { label: 'Tutorial', value: 'Tutorial' },
   { label: 'Comparison', value: 'Comparison' },
   { label: 'AI & Watermarks', value: 'AI & Watermarks' },
+  { label: 'Product', value: 'Product' },
 ]
 
 const articles = [
+  {
+    href: '/blog/watermark-removal-api',
+    label: 'Product',
+    labelColor: 'bg-emerald-100 text-emerald-700',
+    title: 'Introducing the Goodbye Watermark API — watermark removal as a single HTTP call',
+    description:
+      'JSON in, base64 PNG out. The new endpoint, what it does, how it is priced, and how to integrate it via RapidAPI in five minutes.',
+    readTime: '5 min read',
+  },
   {
     href: '/blog/goodbye-watermark-vs-monica-im',
     label: 'Comparison',

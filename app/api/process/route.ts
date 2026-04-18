@@ -1,32 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { ApiResponse, ProcessImageResponse } from '@/lib/types'
-import Replicate from 'replicate'
+import { removeWatermark } from '@/lib/replicate'
 
-const replicate = new Replicate()
-
-async function processWithReplicate(imageBase64: string): Promise<ArrayBuffer> {
-  const input = {
-    image: imageBase64,
-    prompt: "Remove all watermarks and the image overlay elements. Be assertive. And keep the better image quality and size.",
-    negative_prompt: "watermarks, logos, text overlays, signatures, stamps, blur, distortion",
-    match_input_image: true,
-    enable_prompt_expansion: false,
-  }
-
-  const output = await replicate.run("qwen/qwen-image-2-pro", { input }) as { url: () => string }
-
-  const imageUrl = output?.url?.()
-  if (!imageUrl) {
-    throw new Error('No processed image in response')
-  }
-
-  const response = await fetch(imageUrl)
-  if (!response.ok) {
-    throw new Error('Failed to fetch processed image from Replicate')
-  }
-
-  return response.arrayBuffer()
-}
+export const maxDuration = 60
 
 export async function POST(request: NextRequest): Promise<NextResponse<ApiResponse<ProcessImageResponse>>> {
   try {
@@ -39,7 +15,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<ApiRespon
       )
     }
 
-    const processedImageBuffer = await processWithReplicate(imageBase64)
+    const processedImageBuffer = await removeWatermark(imageBase64)
 
     const base64 = Buffer.from(processedImageBuffer).toString('base64')
     const processedBase64 = `data:image/webp;base64,${base64}`
