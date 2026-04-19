@@ -43,6 +43,8 @@ Prioridade de consumo: créditos pagos são consumidos primeiro. Ao zerarem, o m
    - `REPLICATE_API_TOKEN` — token da API do Replicate
    - `NEXT_PUBLIC_SITE_URL` — URL do site (ex: `http://localhost:3000` para dev)
    - `STRIPE_SECRET_KEY` — chave secreta do Stripe (`sk_test_...` para dev)
+   - `RAPIDAPI_PROXY_SECRET` — secret do gateway RapidAPI (header `X-RapidAPI-Proxy-Secret`)
+   - `NEXT_PUBLIC_TURNSTILE_SITE_KEY` + `TURNSTILE_SECRET_KEY` — Cloudflare Turnstile (invisible) para proteger `/api/process` no site consumidor. Opcionais em dev: se `TURNSTILE_SECRET_KEY` não estiver setada, a verificação é pulada.
 
 4. Execute o servidor de desenvolvimento:
    ```bash

@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import { Loader2 } from 'lucide-react'
 import { useSession } from './SessionProvider'
+import { useTurnstile } from './TurnstileProvider'
 import { ProcessedImage, ProcessImageResponse } from '@/lib/types'
 import ProcessedImageModal from './ProcessedImageModal'
 
@@ -25,6 +26,7 @@ const examples = [
 
 export default function ExampleImages() {
   const { remainingToday, addToHistory } = useSession()
+  const { getToken } = useTurnstile()
   const [processingId, setProcessingId] = useState<number | null>(null)
   const [processedImage, setProcessedImage] = useState<ProcessedImage | null>(null)
   const [showModal, setShowModal] = useState(false)
@@ -66,10 +68,11 @@ export default function ExampleImages() {
         reader.readAsDataURL(blob)
       })
 
+      const turnstileToken = await getToken()
       const processResponse = await fetch('/api/process', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ imageBase64: base64 })
+        body: JSON.stringify({ imageBase64: base64, turnstileToken })
       })
 
       const result = await processResponse.json()
@@ -89,7 +92,7 @@ export default function ExampleImages() {
     } finally {
       setProcessingId(null)
     }
-  }, [remainingToday, addToHistory, processingId])
+  }, [remainingToday, addToHistory, processingId, getToken])
 
   if (validExamples.length === 0) {
     return null

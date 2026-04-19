@@ -4,6 +4,7 @@ import { useState, useCallback, useRef, useEffect } from 'react'
 import { track } from '@vercel/analytics'
 import { Upload, ImageIcon, Loader2, Check, AlertCircle, Gem, Layers } from 'lucide-react'
 import { useSession } from './SessionProvider'
+import { useTurnstile } from './TurnstileProvider'
 import { fileToBase64, isValidImageType, MAX_FILE_SIZE } from '@/lib/utils'
 import { ProcessedImage, ProcessImageResponse } from '@/lib/types'
 import ProcessedImageModal from './ProcessedImageModal'
@@ -22,6 +23,7 @@ function base64ToBlob(base64: string): Blob {
 
 export default function DropZone() {
   const { remainingToday, paidCredits, addToHistory, consumePaidCredit, openPaywall } = useSession()
+  const { getToken } = useTurnstile()
   const [isDragging, setIsDragging] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -72,11 +74,14 @@ export default function DropZone() {
     setShowModal(true)
 
     try {
-      const base64 = await fileToBase64(file)
+      const [base64, turnstileToken] = await Promise.all([
+        fileToBase64(file),
+        getToken(),
+      ])
       const response = await fetch('/api/process', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ imageBase64: base64 }),
+        body: JSON.stringify({ imageBase64: base64, turnstileToken }),
       })
       const result = await response.json()
       if (!result.success) throw new Error(result.error || 'Failed to process image')
@@ -99,7 +104,7 @@ export default function DropZone() {
     } finally {
       setIsProcessing(false)
     }
-  }, [isDisabled, hasPaidCredits, addToHistory, consumePaidCredit, openPaywall, revokeOriginalSrc])
+  }, [isDisabled, hasPaidCredits, addToHistory, consumePaidCredit, openPaywall, revokeOriginalSrc, getToken])
 
   // Batch processing
   const processBatch = useCallback(async (files: File[]) => {
@@ -127,11 +132,14 @@ export default function DropZone() {
       })
 
       try {
-        const base64 = await fileToBase64(items[i].file)
+        const [base64, turnstileToken] = await Promise.all([
+          fileToBase64(items[i].file),
+          getToken(),
+        ])
         const response = await fetch('/api/process', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ imageBase64: base64 }),
+          body: JSON.stringify({ imageBase64: base64, turnstileToken }),
         })
         const result = await response.json()
         if (!result.success) throw new Error(result.error || 'Failed')
@@ -156,7 +164,7 @@ export default function DropZone() {
     }
 
     batchProcessingRef.current = false
-  }, [paidCredits, addToHistory, consumePaidCredit])
+  }, [paidCredits, addToHistory, consumePaidCredit, getToken])
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault()

@@ -1,17 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { ApiResponse, ProcessImageResponse } from '@/lib/types'
 import { removeWatermark } from '@/lib/replicate'
+import { verifyTurnstileToken } from '@/lib/turnstile'
 
 export const maxDuration = 60
 
 export async function POST(request: NextRequest): Promise<NextResponse<ApiResponse<ProcessImageResponse>>> {
   try {
-    const { imageBase64 } = await request.json()
+    const { imageBase64, turnstileToken } = await request.json()
 
     if (!imageBase64) {
       return NextResponse.json(
         { success: false, error: 'Image is required' },
         { status: 400 }
+      )
+    }
+
+    const remoteIp =
+      request.headers.get('cf-connecting-ip') ??
+      request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
+      undefined
+
+    const verification = await verifyTurnstileToken(turnstileToken, remoteIp)
+    if (!verification.ok) {
+      return NextResponse.json(
+        { success: false, error: verification.error },
+        { status: 403 }
       )
     }
 

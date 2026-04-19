@@ -1,6 +1,7 @@
 'use client'
 
 import { SessionProvider, useSession } from '@/components/SessionProvider'
+import { TurnstileProvider } from '@/components/TurnstileProvider'
 import Hero from '@/components/Hero'
 import DropZone from '@/components/DropZone'
 import ExampleImages from '@/components/ExampleImages'
@@ -91,8 +92,10 @@ function PageContent({ sloganData }: Props) {
 
 export default function HomeClient({ sloganData }: Props) {
   return (
-    <SessionProvider>
-      <PageContent sloganData={sloganData} />
-    </SessionProvider>
+    <TurnstileProvider>
+      <SessionProvider>
+        <PageContent sloganData={sloganData} />
+      </SessionProvider>
+    </TurnstileProvider>
   )
 }
